@@ -1,6 +1,7 @@
 import os
 from smtplib import SMTP
 from dotenv import load_dotenv
+from email.message import EmailMessage
 
 load_dotenv(verbose=True)
 SERVER = os.getenv("SERVER")
@@ -13,7 +14,12 @@ s = SMTP(SERVER)
 s.login(LOGIN, PASSWORD)
 
 for recipient in RECIPIENTS.split(","):
-    s.sendmail(FROM, [recipient], "From: "+FROM+"\r\nTo: "+recipient+"\r\n\r\nHello !")
+    msg = EmailMessage()
+    msg['Subject'] = "Un message"
+    msg['From'] = FROM
+    msg['To'] = recipient
+    msg.set_content("Salut !")
+    s.send_message(msg)
     print("mail sent to " + recipient)
 
 s.quit()
