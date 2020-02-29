@@ -7,8 +7,13 @@ SERVER = os.getenv("SERVER")
 LOGIN = os.getenv("LOGIN")
 PASSWORD = os.getenv("PASSWORD")
 FROM = os.getenv("FROM")
-TO = os.getenv("TO")
+RECIPIENTS = os.getenv("RECIPIENTS")
 
-with SMTP(SERVER) as s:
-    s.login(LOGIN, PASSWORD)
-    s.sendmail(FROM, [TO], "From: "+FROM+"\r\nTo: "+TO+"\r\n\r\nSalut !")
+s = SMTP(SERVER)
+s.login(LOGIN, PASSWORD)
+
+for recipient in RECIPIENTS.split(","):
+    s.sendmail(FROM, [recipient], "From: "+FROM+"\r\nTo: "+recipient+"\r\n\r\nHello !")
+    print("mail sent to " + recipient)
+
+s.quit()
