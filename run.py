@@ -10,6 +10,9 @@ PASSWORD = os.getenv("PASSWORD")
 FROM = os.getenv("FROM")
 RECIPIENTS = os.getenv("RECIPIENTS")
 
+with open("template.html") as f:
+    template = f.read()
+
 s = SMTP(SERVER)
 s.login(LOGIN, PASSWORD)
 
@@ -18,7 +21,7 @@ for recipient in RECIPIENTS.split(","):
     msg['Subject'] = "Un message"
     msg['From'] = FROM
     msg['To'] = recipient
-    msg.set_content("Salut !")
+    msg.set_content(template)
     s.send_message(msg)
     print("mail sent to " + recipient)
 
