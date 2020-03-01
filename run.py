@@ -11,12 +11,13 @@ PASSWORD = os.getenv("PASSWORD")
 FROM = os.getenv("FROM")
 SUBJECT = os.getenv("SUBJECT")
 CSV = os.getenv("CSV")
+TEMPLATE = os.getenv("TEMPLATE")
 
 with open(CSV) as f:
     csv = list(reader(f, delimiter=";"))
     header = csv.pop(0)
 
-with open("template.html") as f:
+with open(TEMPLATE) as f:
     template = f.read()
 
 s = SMTP(SERVER)
