@@ -2,6 +2,7 @@ import os
 from smtplib import SMTP
 from dotenv import load_dotenv
 from email.message import EmailMessage
+from csv import reader
 
 load_dotenv(verbose=True)
 SERVER = os.getenv("SERVER")
@@ -9,6 +10,11 @@ LOGIN = os.getenv("LOGIN")
 PASSWORD = os.getenv("PASSWORD")
 FROM = os.getenv("FROM")
 SUBJECT = os.getenv("SUBJECT")
+CSV = os.getenv("CSV")
+
+with open(CSV) as f:
+    csv = list(reader(f, delimiter=";"))
+    header = csv.pop(0)
 
 with open("template.html") as f:
     template = f.read()
@@ -16,13 +22,15 @@ with open("template.html") as f:
 s = SMTP(SERVER)
 s.login(LOGIN, PASSWORD)
 
-for recipient in RECIPIENTS.split(","):
+for row in csv:
+    row = dict(zip(header, row))
     msg = EmailMessage()
     msg['Subject'] = SUBJECT
     msg['From'] = FROM
-    msg['To'] = recipient
-    msg.set_content(template)
+    msg['To'] = row["Email"]
+    content = template.format(**row)
+    msg.add_alternative(content, subtype='html')
     s.send_message(msg)
-    print("mail sent to " + recipient)
+    print("mail sent to " + row["Email"])
 
 s.quit()
