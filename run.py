@@ -30,7 +30,7 @@ for row in csv:
     msg['Subject'] = SUBJECT
     msg['From'] = FROM
     msg['To'] = row["Email"]
-    content = template.format(**row)
+    content = template.format(**row, **msg)
     msg.add_alternative(content, subtype='html')
     s.send_message(msg)
     print("mail sent to " + row["Email"])
