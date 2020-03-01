@@ -8,7 +8,7 @@ SERVER = os.getenv("SERVER")
 LOGIN = os.getenv("LOGIN")
 PASSWORD = os.getenv("PASSWORD")
 FROM = os.getenv("FROM")
-RECIPIENTS = os.getenv("RECIPIENTS")
+SUBJECT = os.getenv("SUBJECT")
 
 with open("template.html") as f:
     template = f.read()
@@ -18,7 +18,7 @@ s.login(LOGIN, PASSWORD)
 
 for recipient in RECIPIENTS.split(","):
     msg = EmailMessage()
-    msg['Subject'] = "Un message"
+    msg['Subject'] = SUBJECT
     msg['From'] = FROM
     msg['To'] = recipient
     msg.set_content(template)
