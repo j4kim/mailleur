@@ -20,6 +20,7 @@ with open("template.html") as f:
     template = f.read()
 
 s = SMTP(SERVER)
+s.starttls()
 s.login(LOGIN, PASSWORD)
 
 for row in csv:
