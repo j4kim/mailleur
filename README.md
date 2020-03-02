@@ -16,7 +16,8 @@ Copy
 
 Adapt `.env`.
 
-Run:
+## Run
+
 ```bash
 python run.py
 ```
