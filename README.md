@@ -2,6 +2,11 @@
 
 Python email generation from template and sending from csv
 
+## Requirements
+
+* Python 3
+* [python-dotenv](https://pypi.org/project/python-dotenv/)
+
 ## Set up
 
 Copy
