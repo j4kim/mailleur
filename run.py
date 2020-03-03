@@ -7,9 +7,10 @@ from datetime import datetime
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
-parser.add_argument("-t", "--template", help="Path to your template file")
-parser.add_argument("-c", "--csv", help="Path to the csv containing the recipients")
-parser.add_argument("-s", "--subject", help="Email subject")
+parser.add_argument("-t", "--template", help="path to your template file (default defined in .env)")
+parser.add_argument("-c", "--csv", help="path to the csv containing the recipients (default defined in .env)")
+parser.add_argument("-s", "--subject", help="email subject (default defined in .env)")
+parser.add_argument("-S", "--send", help="really send email (otherwise, just log)", action="store_true")
 args = parser.parse_args()
 
 load_dotenv(verbose=True)
@@ -28,7 +29,7 @@ with open(CSV) as f:
 with open(TEMPLATE) as f:
     template = f.read()
 
-logdir = "logs/{0:%Y-%m-%d %H%M%S}".format(datetime.now())
+logdir = "logs/{0:%Y-%m-%d_%H-%M-%S}".format(datetime.now())
 os.makedirs(logdir)
 
 s = SMTP(SERVER)
@@ -46,7 +47,10 @@ for row in csv:
     logfile = "{}/{}.html".format(logdir, row["Email"])
     with open(logfile, "w") as f:
         f.write(content)
-    s.send_message(msg)
-    print("mail sent to " + row["Email"])
+    if args.send:
+        s.send_message(msg)
+        print("mail sent to " + row["Email"])
+    else:
+        print("mail logged in " + logfile)
 
 s.quit()

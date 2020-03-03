@@ -19,5 +19,10 @@ Adapt `.env`.
 ## Run
 
 ```bash
-python run.py
+python run.py --send
+```
+
+For other command line arguments, see help:
+```bash
+python run.py --help
 ```
