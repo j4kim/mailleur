@@ -4,15 +4,22 @@ from dotenv import load_dotenv
 from email.message import EmailMessage
 from csv import reader
 from datetime import datetime
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument("-t", "--template", help="Path to your template file")
+parser.add_argument("-c", "--csv", help="Path to the csv containing the recipients")
+parser.add_argument("-s", "--subject", help="Email subject")
+args = parser.parse_args()
 
 load_dotenv(verbose=True)
 SERVER = os.getenv("SERVER")
 LOGIN = os.getenv("LOGIN")
 PASSWORD = os.getenv("PASSWORD")
 FROM = os.getenv("FROM")
-SUBJECT = os.getenv("SUBJECT")
-CSV = os.getenv("CSV")
-TEMPLATE = os.getenv("TEMPLATE")
+SUBJECT = args.subject or os.getenv("SUBJECT")
+CSV = args.csv or os.getenv("CSV")
+TEMPLATE = args.template or os.getenv("TEMPLATE")
 
 with open(CSV) as f:
     csv = list(reader(f, delimiter=";"))
@@ -36,10 +43,10 @@ for row in csv:
     msg['To'] = row["Email"]
     content = template.format(**row, **msg)
     msg.add_alternative(content, subtype='html')
-    s.send_message(msg)
     logfile = "{}/{}.html".format(logdir, row["Email"])
     with open(logfile, "w") as f:
         f.write(content)
+    s.send_message(msg)
     print("mail sent to " + row["Email"])
 
 s.quit()
