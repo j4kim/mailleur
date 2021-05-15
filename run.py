@@ -11,6 +11,7 @@ parser.add_argument("-t", "--template", help="path to your template file (defaul
 parser.add_argument("-c", "--csv", help="path to the csv containing the recipients (default defined in .env)")
 parser.add_argument("-s", "--subject", help="email subject (default defined in .env)")
 parser.add_argument("-S", "--send", help="really send email (otherwise, just log)", action="store_true")
+parser.add_argument("-C", "--cc", help="Addresses to send a copy of each email")
 args = parser.parse_args()
 
 load_dotenv(verbose=True)
@@ -21,6 +22,7 @@ FROM = os.getenv("FROM")
 SUBJECT = args.subject or os.getenv("SUBJECT")
 CSV = args.csv or os.getenv("CSV")
 TEMPLATE = args.template or os.getenv("TEMPLATE")
+CC = args.cc or os.getenv("CC")
 
 with open(CSV) as f:
     csv = list(reader(f, delimiter=";"))
@@ -42,6 +44,7 @@ for row in csv:
     msg['Subject'] = SUBJECT
     msg['From'] = FROM
     msg['To'] = row["Email"]
+    msg['Cc'] = CC
     content = template.format(**row, **msg)
     msg.add_alternative(content, subtype='html')
     logfile = "{}/{}.html".format(logdir, row["Email"])
