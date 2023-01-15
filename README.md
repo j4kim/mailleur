@@ -26,3 +26,22 @@ For other command line arguments, see help:
 ```bash
 python run.py --help
 ```
+
+## Virtual env
+
+Using virtualenvwrapper.
+
+The first time:
+```
+mkvirtualenv mailleur
+```
+
+Then:
+```
+workon mailleur
+```
+
+Install requirements:
+```
+pip install -r requirements.txt 
+```
