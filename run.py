@@ -52,8 +52,11 @@ for row in csv:
     with open(logfile, "w") as f:
         f.write(content)
     if args.send:
-        s.send_message(msg)
-        print("mail sent to " + row["Email"])
+        try:
+            s.send_message(msg)
+            print("mail sent to " + row["Email"])
+        except Exception as e:
+            print(">>> cannot send to " + row["Email"] + " - " + str(e))
     else:
         print("mail logged in " + logfile)
 
