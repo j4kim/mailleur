@@ -44,7 +44,8 @@ for row in csv:
     msg['Subject'] = SUBJECT
     msg['From'] = FROM
     msg['To'] = row["Email"]
-    msg['Cc'] = CC
+    if CC:
+        msg['Cc'] = CC
     content = template.format(**row, **msg)
     msg.add_alternative(content, subtype='html')
     logfile = "{}/{}.html".format(logdir, row["Email"])
