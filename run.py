@@ -14,7 +14,7 @@ parser.add_argument("-S", "--send", help="really send email (otherwise, just log
 parser.add_argument("-C", "--cc", help="Addresses to send a copy of each email")
 args = parser.parse_args()
 
-load_dotenv(verbose=True)
+load_dotenv(verbose=True, override=True)
 SERVER = os.getenv("SERVER")
 LOGIN = os.getenv("LOGIN")
 PASSWORD = os.getenv("PASSWORD")
