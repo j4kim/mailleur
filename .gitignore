@@ -4,3 +4,4 @@ logs
 recipients.csv
 template.html
 venv
+*.pdf

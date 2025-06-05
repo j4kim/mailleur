@@ -12,6 +12,7 @@ parser.add_argument("-c", "--csv", help="path to the csv containing the recipien
 parser.add_argument("-s", "--subject", help="email subject (default defined in .env)")
 parser.add_argument("-S", "--send", help="really send email (otherwise, just log)", action="store_true")
 parser.add_argument("-C", "--cc", help="Addresses to send a copy of each email")
+parser.add_argument("-p", "--pdf", help="Path to PDF to attach")
 args = parser.parse_args()
 
 load_dotenv(verbose=True, override=True)
@@ -23,6 +24,7 @@ SUBJECT = args.subject or os.getenv("SUBJECT")
 CSV = args.csv or os.getenv("CSV")
 TEMPLATE = args.template or os.getenv("TEMPLATE")
 CC = args.cc or os.getenv("CC")
+PDF = args.pdf or os.getenv("PDF")
 
 with open(CSV) as f:
     csv = list(reader(f, delimiter=";"))
@@ -30,6 +32,14 @@ with open(CSV) as f:
 
 with open(TEMPLATE) as f:
     template = f.read()
+
+attachment = None
+attachment_filename = None
+
+if PDF and os.path.isfile(PDF):
+    with open(PDF, "rb") as pdf_file:
+        attachment = pdf_file.read()
+        attachment_filename = os.path.basename(PDF)
 
 logdir = "logs/{0:%Y-%m-%d_%H-%M-%S}".format(datetime.now())
 os.makedirs(logdir)
@@ -48,6 +58,8 @@ for row in csv:
         msg['Cc'] = CC
     content = template.format(**row, **msg)
     msg.add_alternative(content, subtype='html')
+    if attachment:
+        msg.add_attachment(attachment, maintype="application", subtype="pdf", filename=attachment_filename)
     logfile = "{}/{}.html".format(logdir, row["Email"])
     with open(logfile, "w") as f:
         f.write(content)
