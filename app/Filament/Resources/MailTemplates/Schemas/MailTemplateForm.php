@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\MailTemplates\Schemas;
 
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Schema;
 
 class MailTemplateForm
@@ -11,7 +11,11 @@ class MailTemplateForm
     {
         return $schema
             ->components([
-                Textarea::make('body')
+                RichEditor::make('body')
+                    ->mergeTags([
+                        'name',
+                        'today',
+                    ])
                     ->required()
                     ->columnSpanFull(),
             ]);
