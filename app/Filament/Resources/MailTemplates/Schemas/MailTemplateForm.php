@@ -14,8 +14,8 @@ class MailTemplateForm
                 RichEditor::make('body')
                     ->mergeTags([
                         'name',
-                        'today',
                     ])
+                    ->json()
                     ->required()
                     ->columnSpanFull(),
             ]);

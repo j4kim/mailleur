@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MailTemplates\Schemas;
 
+use App\Filament\Infolists\Components\MailTemplateBodyEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -17,8 +18,7 @@ class MailTemplateInfolist
                 TextEntry::make('updated_at')
                     ->dateTime()
                     ->placeholder('-'),
-                TextEntry::make('body')
-                    ->columnSpanFull(),
+                MailTemplateBodyEntry::make('body'),
             ]);
     }
 }
