@@ -3,7 +3,7 @@
 @endphp
 
 <x-dynamic-component :component="$getEntryWrapperView()" :entry="$entry">
-    <div {{ $getExtraAttributeBag() }}>
+    <div class='prose dark:prose-invert border border-current/30 p-4 rounded-lg' {{ $getExtraAttributeBag() }}>
         {{ RichContentRenderer::make($getState())->mergeTags([
             'name' => 'Joe',
         ]) }}
