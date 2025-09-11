@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Campaigns\Schemas;
 
-use App\Filament\Infolists\Components\MailTemplateBodyEntry;
+use App\Filament\Infolists\Components\RichTextEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -19,7 +19,7 @@ class CampaignInfolist
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('subject'),
-                MailTemplateBodyEntry::make('template')
+                RichTextEntry::make('template')
                     ->columnSpanFull(),
             ]);
     }
