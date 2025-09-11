@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Campaigns\Schemas;
 
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Schema;
 
 class CampaignForm
@@ -14,9 +14,12 @@ class CampaignForm
             ->components([
                 TextInput::make('subject')
                     ->required(),
-                Textarea::make('template')
-                    ->columnSpanFull(),
-                Textarea::make('columns')
+                RichEditor::make('template')
+                    ->mergeTags([
+                        'name',
+                    ])
+                    ->json()
+                    ->required()
                     ->columnSpanFull(),
             ]);
     }

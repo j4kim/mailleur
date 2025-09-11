@@ -4,7 +4,7 @@
 
 <x-dynamic-component :component="$getEntryWrapperView()" :entry="$entry">
     <div {{ $getExtraAttributeBag() }}>
-        {{ RichContentRenderer::make($record->body)->mergeTags([
+        {{ RichContentRenderer::make($getState())->mergeTags([
             'name' => 'Joe',
         ]) }}
     </div>
