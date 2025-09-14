@@ -6,6 +6,7 @@ use App\Filament\Resources\Campaigns\Pages\CreateCampaign;
 use App\Filament\Resources\Campaigns\Pages\EditCampaign;
 use App\Filament\Resources\Campaigns\Pages\ListCampaigns;
 use App\Filament\Resources\Campaigns\Pages\ViewCampaign;
+use App\Filament\Resources\Campaigns\RelationManagers\RecipientsRelationManager;
 use App\Filament\Resources\Campaigns\Schemas\CampaignForm;
 use App\Filament\Resources\Campaigns\Schemas\CampaignInfolist;
 use App\Filament\Resources\Campaigns\Tables\CampaignsTable;
@@ -21,8 +22,6 @@ class CampaignResource extends Resource
     protected static ?string $model = Campaign::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
-    protected static ?string $recordTitleAttribute = 'subject';
 
     public static function form(Schema $schema): Schema
     {
@@ -42,7 +41,7 @@ class CampaignResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RecipientsRelationManager::class,
         ];
     }
 
