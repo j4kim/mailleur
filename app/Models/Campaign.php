@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Campaign extends Model
 {
@@ -12,5 +13,10 @@ class Campaign extends Model
             'template' => 'array',
             'columns' => 'array',
         ];
+    }
+
+    public function recipients(): HasMany
+    {
+        return $this->hasMany(Recipient::class);
     }
 }
