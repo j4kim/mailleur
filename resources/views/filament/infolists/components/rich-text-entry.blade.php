@@ -5,7 +5,7 @@
 
 @if($richTextJson)
 <x-dynamic-component :component="$getEntryWrapperView()" :entry="$entry">
-    <div class='prose dark:prose-invert border border-current/30 p-4 rounded-lg' {{ $getExtraAttributeBag() }}>
+    <div class='prose bg-white dark:bg-gray-900 dark:prose-invert border border-current/10 py-4 px-6 rounded-xl' {{ $getExtraAttributeBag() }}>
         {{ RichContentRenderer::make($richTextJson)->mergeTags([
             'name' => 'Joe',
         ]) }}
