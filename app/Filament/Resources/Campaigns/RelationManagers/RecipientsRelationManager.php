@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources\Campaigns\RelationManagers;
 
-use Filament\Actions\AssociateAction;
+use App\Models\Campaign;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\DissociateAction;
 use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -57,6 +58,14 @@ class RecipientsRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make(),
+                Action::make('import recipients')
+                    ->schema([
+                        FileUpload::make('csv_file')->label("CSV file"),
+                    ])->action(function (array $data){
+                        /** @var Campaign $campaign */
+                        $campaign = $this->getOwnerRecord();
+                        $campaign->importCsv($data['csv_file']);
+                    }),
             ])
             ->recordActions([
                 EditAction::make(),
