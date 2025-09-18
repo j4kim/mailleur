@@ -37,22 +37,27 @@ class RecipientsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        /** @var Campaign $campaign */
+        $campaign = $this->getOwnerRecord();
+
+        $columns = [
+            TextColumn::make('created_at')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('updated_at')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('email')
+                ->label('Email')
+                ->searchable(),
+            TextColumn::make('data')
+        ];
+
         return $table
             ->recordTitleAttribute('email')
-            ->columns([
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable(),
-                TextColumn::make('data')
-            ])
+            ->columns($columns)
             ->filters([
                 //
             ])
@@ -61,9 +66,7 @@ class RecipientsRelationManager extends RelationManager
                 Action::make('import recipients')
                     ->schema([
                         FileUpload::make('csv_file')->label("CSV file"),
-                    ])->action(function (array $data){
-                        /** @var Campaign $campaign */
-                        $campaign = $this->getOwnerRecord();
+                    ])->action(function (array $data) use ($campaign) {
                         $campaign->importCsv($data['csv_file']);
                     }),
             ])
