@@ -15,6 +15,7 @@ class CampaignForm
                 TextInput::make('subject')
                     ->required(),
                 RichEditor::make('template')
+                    ->hiddenOn('create')
                     ->mergeTags([
                         'name',
                     ])
