@@ -22,6 +22,11 @@ class RecipientsRelationManager extends RelationManager
 {
     protected static string $relationship = 'recipients';
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
