@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Campaigns\Schemas;
 
+use App\Models\Campaign;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Schema;
@@ -16,9 +17,9 @@ class CampaignForm
                     ->required(),
                 RichEditor::make('template')
                     ->hiddenOn('create')
-                    ->mergeTags([
-                        'name',
-                    ])
+                    ->mergeTags(function (Campaign $campaign) {
+                        return $campaign->columns;
+                    })
                     ->json()
                     ->required()
                     ->columnSpanFull(),
