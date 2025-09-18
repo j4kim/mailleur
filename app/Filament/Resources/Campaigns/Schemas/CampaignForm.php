@@ -21,7 +21,6 @@ class CampaignForm
                         return $campaign->columns;
                     })
                     ->json()
-                    ->required()
                     ->columnSpanFull(),
             ]);
     }
