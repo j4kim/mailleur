@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
             ],
-            'columns' => ['email', 'name'],
+            'columns' => ['name'],
         ]);
 
         $campaign->recipients()->create([

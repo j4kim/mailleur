@@ -37,12 +37,12 @@ class Campaign extends Model
             if ($header->doesntContain('email')) {
                 abort(422, 'The file must contain an "email" header');
             }
-            $this->columns = collect($this->columns)->concat($header)->unique();
+            $this->columns = collect($this->columns)->concat($header)->unique()->values()->reject('email');
             $this->save();
             foreach ($csv as $index => $row) {
-                $row = collect($row)->mapWithKeys(fn($v, $k) => [strtolower($k) => $v])->toArray();
+                $row = collect($row)->mapWithKeys(fn($v, $k) => [strtolower($k) => $v]);
                 $email = strtolower($row['email']);
-                $validator = Validator::make($row, [
+                $validator = Validator::make($row->toArray(), [
                     'email' => 'required|email'
                 ]);
                 if ($validator->fails()) {
@@ -50,10 +50,11 @@ class Campaign extends Model
                     abort(422, "Row $index ($email) has invalid data. " . $errors);
                 }
                 $recipient = $this->recipients()->firstOrNew(['email' => $email]);
+                $data = $row->except('email');
                 if ($recipient->exists) {
-                    $recipient->data = array_merge($recipient->data, $row);
+                    $recipient->data = array_merge($recipient->data, $data->toArray());
                 } else {
-                    $recipient->data = $row;
+                    $recipient->data = $data;
                 }
                 $recipient->save();
             }
