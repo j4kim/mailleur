@@ -59,8 +59,15 @@ class RecipientsRelationManager extends RelationManager
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('email')
                 ->label('Email')
+                ->sortable()
                 ->searchable(),
-            TextColumn::make('data')
+            ...collect($campaign->columns)->map(function (string $name) {
+                return TextColumn::make("data.$name")
+                    ->label($name)
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable();
+            }),
         ];
 
         return $table
