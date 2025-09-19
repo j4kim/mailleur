@@ -18,7 +18,7 @@ class CampaignForm
                 RichEditor::make('template')
                     ->hiddenOn('create')
                     ->mergeTags(function (Campaign $campaign) {
-                        return $campaign->columns;
+                        return ['email', ...$campaign->columns];
                     })
                     ->json()
                     ->columnSpanFull(),

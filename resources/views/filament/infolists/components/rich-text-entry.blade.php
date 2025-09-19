@@ -5,10 +5,11 @@
     if ($template) {
         $recipient = $record->recipients()->latest('updated_at')->first();
         if ($recipient) {
-            $mergeTags = $recipient->data;
+            $mergeTags = ['email' => $recipient->email, ...$recipient->data];
         } else {
             $mergeTags = collect($record->columns)
-                ->mapWithKeys(fn($c) => [$c => "[$c]"])
+                ->push('email')
+                ->mapWithKeys(fn($c) => [$c => "{{ $c }}"])
                 ->toArray();
         }
         $rendered = RichContentRenderer::make($template)->mergeTags($mergeTags);
