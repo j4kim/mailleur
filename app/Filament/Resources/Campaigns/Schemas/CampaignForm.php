@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Campaigns\Schemas;
 use App\Models\Campaign;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\TagsInput;
 use Filament\Schemas\Schema;
 
 class CampaignForm
@@ -22,6 +23,9 @@ class CampaignForm
                     })
                     ->json()
                     ->columnSpanFull(),
+                TagsInput::make('columns')
+                    ->hiddenOn('create')
+                    ->placeholder("Add column"),
             ]);
     }
 }
