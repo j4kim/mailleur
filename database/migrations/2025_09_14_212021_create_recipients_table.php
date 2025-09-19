@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email');
             $table->unique(['campaign_id', 'email']);
             $table->json('data')->nullable();
+            $table->text('mail_body')->nullable();
         });
     }
 
