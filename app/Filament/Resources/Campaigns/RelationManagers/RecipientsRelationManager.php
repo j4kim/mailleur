@@ -85,7 +85,10 @@ class RecipientsRelationManager extends RelationManager
                 CreateAction::make()->outlined(),
                 Action::make('import recipients')
                     ->schema([
-                        FileUpload::make('csv_file')->label("CSV file")->required(),
+                        FileUpload::make('csv_file')
+                            ->label("CSV file")
+                            ->required()
+                            ->acceptedFileTypes(['text/csv']),
                     ])->action(function (array $data, Action $action, Component $livewire) use ($campaign) {
                         try {
                             $campaign->importCsv($data['csv_file']);
