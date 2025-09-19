@@ -127,13 +127,15 @@ class RecipientsRelationManager extends RelationManager
                     })
                     ->schema([
                         RichEditor::make('mail_body')
-                    ]),
+                    ])
+                    ->slideOver(),
                 EditAction::make('write')
                     ->label("Write")
                     ->hidden(fn(Recipient $recipient) => !$recipient->mail_body)
                     ->schema([
                         RichEditor::make('mail_body')
-                    ]),
+                    ])
+                    ->slideOver(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
