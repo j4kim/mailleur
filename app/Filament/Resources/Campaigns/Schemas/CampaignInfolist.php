@@ -13,10 +13,10 @@ class CampaignInfolist
         return $schema
             ->components([
                 TextEntry::make('created_at')
-                    ->dateTime()
+                    ->dateTime('d.m.Y H:i')
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
-                    ->dateTime()
+                    ->dateTime('d.m.Y H:i')
                     ->placeholder('-'),
                 TextEntry::make('subject'),
                 TextEntry::make('columns'),
