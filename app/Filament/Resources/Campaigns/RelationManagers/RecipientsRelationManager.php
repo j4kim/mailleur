@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Campaigns\RelationManagers;
 
 use App\Models\Campaign;
+use App\Models\Recipient;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -10,6 +11,8 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -109,7 +112,20 @@ class RecipientsRelationManager extends RelationManager
                     }),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()->label("Data"),
+                EditAction::make('generate')
+                    ->label("Generate")
+                    ->mutateRecordDataUsing(function (array $data, Recipient $recipient) use ($campaign): array {
+                        if ($data['mail_body']) return $data;
+                        return [
+                            'mail_body' => RichContentRenderer::make($campaign->template)
+                                ->mergeTags(['email' => $recipient->email, ...$recipient->data])
+                                ->toHtml(),
+                        ];
+                    })
+                    ->schema([
+                        RichEditor::make('mail_body')
+                    ]),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
