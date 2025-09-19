@@ -40,7 +40,7 @@ class Campaign extends Model
             $this->columns = collect($this->columns)->concat($header)->unique()->reject('email')->values();
             $this->save();
             foreach ($csv as $index => $row) {
-                $row = collect($row)->mapWithKeys(fn($v, $k) => [strtolower($k) => $v]);
+                $row = collect($row)->mapWithKeys(fn($v, $k) => [strtolower($k) => trim($v)]);
                 $email = strtolower($row['email']);
                 $validator = Validator::make($row->toArray(), [
                     'email' => 'required|email'
