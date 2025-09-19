@@ -12,6 +12,7 @@ use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -32,14 +33,18 @@ class RecipientsRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
+        /** @var Campaign $campaign */
+        $campaign = $this->getOwnerRecord();
+
         return $schema
             ->components([
                 TextInput::make('email')
                     ->label('Email address')
                     ->email()
                     ->required(),
-                KeyValue::make('data')
-                    ->columnSpanFull(),
+                ...collect($campaign->columns)->map(function (string $name) {
+                    return Textarea::make("data.$name")->label($name)->rows(1);
+                }),
             ]);
     }
 
