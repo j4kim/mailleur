@@ -114,15 +114,23 @@ class RecipientsRelationManager extends RelationManager
             ->recordActions([
                 EditAction::make()->label("Data"),
                 EditAction::make('generate')
-                    ->label("Generate")
-                    ->mutateRecordDataUsing(function (array $data, Recipient $recipient) use ($campaign): array {
-                        if ($data['mail_body']) return $data;
+                    ->label(
+                        fn(Recipient $recipient) => $recipient->mail_body ? "Regenerate" : "Generate"
+                    )
+                    ->hidden(fn() => !$campaign->template)
+                    ->mutateRecordDataUsing(function (Recipient $recipient) use ($campaign): array {
                         return [
                             'mail_body' => RichContentRenderer::make($campaign->template)
                                 ->mergeTags($recipient->getMergeTags())
                                 ->toHtml(),
                         ];
                     })
+                    ->schema([
+                        RichEditor::make('mail_body')
+                    ]),
+                EditAction::make('write')
+                    ->label("Write")
+                    ->hidden(fn(Recipient $recipient) => !$recipient->mail_body)
                     ->schema([
                         RichEditor::make('mail_body')
                     ]),
