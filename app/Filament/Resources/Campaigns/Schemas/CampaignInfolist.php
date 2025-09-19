@@ -19,6 +19,7 @@ class CampaignInfolist
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('subject'),
+                TextEntry::make('columns'),
                 RichTextEntry::make('template')
                     ->columnSpanFull(),
             ]);

@@ -1,14 +1,23 @@
 @php
     use Filament\Forms\Components\RichEditor\RichContentRenderer;
-    $richTextJson = $getState();
+    $template = $getState();
+    $rendered = "";
+    if ($template) {
+        $recipient = $record->recipients()->latest('updated_at')->first();
+        if ($recipient) {
+            $mergeTags = ['email' => $recipient->email, ...$recipient->data];
+        } else {
+            $mergeTags = collect($record->columns)
+                ->push('email')
+                ->mapWithKeys(fn($c) => [$c => "{{ $c }}"])
+                ->toArray();
+        }
+        $rendered = RichContentRenderer::make($template)->mergeTags($mergeTags);
+    }
 @endphp
 
-@if($richTextJson)
 <x-dynamic-component :component="$getEntryWrapperView()" :entry="$entry">
     <div class='prose bg-white dark:bg-gray-900 dark:prose-invert border border-current/10 py-4 px-6 rounded-xl' {{ $getExtraAttributeBag() }}>
-        {{ RichContentRenderer::make($richTextJson)->mergeTags([
-            'name' => 'Joe',
-        ]) }}
+        {{ $rendered }}
     </div>
 </x-dynamic-component>
-@endif

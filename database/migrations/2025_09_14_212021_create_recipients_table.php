@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('campaign_id')->constrained()->cascadeOnDelete();
             $table->string('email');
+            $table->unique(['campaign_id', 'email']);
             $table->json('data')->nullable();
         });
     }

@@ -6,7 +6,6 @@ use App\Filament\Resources\Campaigns\Pages\CreateCampaign;
 use App\Filament\Resources\Campaigns\Pages\EditCampaign;
 use App\Filament\Resources\Campaigns\Pages\ListCampaigns;
 use App\Filament\Resources\Campaigns\Pages\ViewCampaign;
-use App\Filament\Resources\Campaigns\RelationManagers\RecipientsRelationManager;
 use App\Filament\Resources\Campaigns\Schemas\CampaignForm;
 use App\Filament\Resources\Campaigns\Schemas\CampaignInfolist;
 use App\Filament\Resources\Campaigns\Tables\CampaignsTable;
@@ -36,13 +35,6 @@ class CampaignResource extends Resource
     public static function table(Table $table): Table
     {
         return CampaignsTable::configure($table);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            RecipientsRelationManager::class,
-        ];
     }
 
     public static function getPages(): array
