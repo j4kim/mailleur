@@ -13,10 +13,13 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Livewire\Component;
+use Throwable;
 
 class RecipientsRelationManager extends RelationManager
 {
@@ -70,9 +73,26 @@ class RecipientsRelationManager extends RelationManager
                 CreateAction::make(),
                 Action::make('import recipients')
                     ->schema([
-                        FileUpload::make('csv_file')->label("CSV file"),
-                    ])->action(function (array $data) use ($campaign) {
-                        $campaign->importCsv($data['csv_file']);
+                        FileUpload::make('csv_file')->label("CSV file")->required(),
+                    ])->action(function (array $data, Action $action, Component $livewire) use ($campaign) {
+                        try {
+                            $campaign->importCsv($data['csv_file']);
+
+                            Notification::make()
+                                ->title('Success')
+                                ->body('Recipients imported successfully')
+                                ->success()
+                                ->send();
+
+                            return $livewire->redirect(request()->header('Referer'));
+                        } catch (Throwable $e) {
+                            Notification::make()
+                                ->title('Error')
+                                ->body($e->getMessage())
+                                ->status('danger')
+                                ->send();
+                            $action->cancel();
+                        }
                     }),
             ])
             ->recordActions([
