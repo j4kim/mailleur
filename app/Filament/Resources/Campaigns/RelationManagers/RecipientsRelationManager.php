@@ -82,7 +82,7 @@ class RecipientsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()->outlined(),
                 Action::make('import recipients')
                     ->schema([
                         FileUpload::make('csv_file')->label("CSV file")->required(),
