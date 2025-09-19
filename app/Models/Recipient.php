@@ -14,16 +14,22 @@ class Recipient extends Model
             'data' => 'array',
         ];
     }
-    
+
     protected function email(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => strtolower($value),
+            set: fn(string $value) => strtolower($value),
         );
     }
 
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class);
+    }
+
+    public function getMergeTags(): array
+    {
+        $data = $this->data ?? [];
+        return ['email' => $this->email, ...$data];
     }
 }

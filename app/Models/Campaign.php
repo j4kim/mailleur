@@ -25,6 +25,12 @@ class Campaign extends Model
         return $this->hasMany(Recipient::class);
     }
 
+    public function getMergeTags(): array
+    {
+        $columns = $campaign->columns ?? [];
+        return ['email', ...$columns];
+    }
+
     public function importCsv(string $filename)
     {
         $path = Storage::path($filename);

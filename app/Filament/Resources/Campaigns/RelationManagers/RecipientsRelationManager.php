@@ -119,7 +119,7 @@ class RecipientsRelationManager extends RelationManager
                         if ($data['mail_body']) return $data;
                         return [
                             'mail_body' => RichContentRenderer::make($campaign->template)
-                                ->mergeTags(['email' => $recipient->email, ...$recipient->data])
+                                ->mergeTags($recipient->getMergeTags())
                                 ->toHtml(),
                         ];
                     })
