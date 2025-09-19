@@ -37,7 +37,7 @@ class Campaign extends Model
             if ($header->doesntContain('email')) {
                 abort(422, 'The file must contain an "email" header');
             }
-            $this->columns = collect($this->columns)->concat($header)->unique()->values()->reject('email');
+            $this->columns = collect($this->columns)->concat($header)->unique()->reject('email')->values();
             $this->save();
             foreach ($csv as $index => $row) {
                 $row = collect($row)->mapWithKeys(fn($v, $k) => [strtolower($k) => $v]);
