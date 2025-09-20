@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Campaigns\RelationManagers;
 use App\Models\Campaign;
 use App\Models\Recipient;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -104,7 +105,6 @@ class RecipientsRelationManager extends RelationManager
                     }),
             ])
             ->recordActions([
-                EditAction::make()->label("Data"),
                 EditAction::make('generate')
                     ->label(
                         fn(Recipient $recipient) => $recipient->mail_body ? "Regenerate" : "Generate"
@@ -125,7 +125,10 @@ class RecipientsRelationManager extends RelationManager
                         RichEditor::make('mail_body')
                     ])
                     ->slideOver(),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    EditAction::make()->label("Edit data"),
+                    DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
