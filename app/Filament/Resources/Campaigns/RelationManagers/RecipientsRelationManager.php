@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Campaigns\RelationManagers;
 use App\Models\Campaign;
 use App\Models\Recipient;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -12,7 +13,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -20,6 +20,8 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Throwable;
 
@@ -118,13 +120,10 @@ class RecipientsRelationManager extends RelationManager
                         fn(Recipient $recipient) => $recipient->mail_body ? "Regenerate" : "Generate"
                     )
                     ->hidden(fn() => !$campaign->template)
-                    ->mutateRecordDataUsing(function (Recipient $recipient) use ($campaign): array {
-                        return [
-                            'mail_body' => RichContentRenderer::make($campaign->template)
-                                ->mergeTags($recipient->getMergeTags())
-                                ->toHtml(),
-                        ];
-                    })
+                    ->mutateRecordDataUsing(
+                        fn(Recipient $recipient): array =>
+                        ['mail_body' => $recipient->generateMailBody()]
+                    )
                     ->schema([
                         RichEditor::make('mail_body')
                     ])
@@ -141,6 +140,14 @@ class RecipientsRelationManager extends RelationManager
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    BulkAction::make('generate')
+                        ->label("Generate / Regenerate selected")
+                        ->color('primary')
+                        ->icon('heroicon-m-pencil-square')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->generateAndSave();
+                        }),
                 ]),
             ]);
     }

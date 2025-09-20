@@ -22,7 +22,7 @@ class Campaign extends Model
 
     public function recipients(): HasMany
     {
-        return $this->hasMany(Recipient::class);
+        return $this->hasMany(Recipient::class)->chaperone();
     }
 
     public function getMergeTags(): array
