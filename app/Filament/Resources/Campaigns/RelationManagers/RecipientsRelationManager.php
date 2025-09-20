@@ -95,20 +95,10 @@ class RecipientsRelationManager extends RelationManager
                     ])->action(function (array $data, Action $action, Component $livewire) use ($campaign) {
                         try {
                             $campaign->importCsv($data['csv_file']);
-
-                            Notification::make()
-                                ->title('Success')
-                                ->body('Recipients imported successfully')
-                                ->success()
-                                ->send();
-
+                            $this->successNotif('Recipients imported successfully');
                             return $livewire->redirect(request()->header('Referer'));
                         } catch (Throwable $e) {
-                            Notification::make()
-                                ->title('Error')
-                                ->body($e->getMessage())
-                                ->status('danger')
-                                ->send();
+                            $this->errorNotif($e->getMessage());
                             $action->cancel();
                         }
                     }),
@@ -150,5 +140,23 @@ class RecipientsRelationManager extends RelationManager
                         }),
                 ]),
             ]);
+    }
+
+    public function successNotif(string $message)
+    {
+        Notification::make()
+            ->title('Success')
+            ->body($message)
+            ->success()
+            ->send();
+    }
+
+    public function errorNotif(string $message)
+    {
+        Notification::make()
+            ->title('Error')
+            ->body($message)
+            ->status('danger')
+            ->send();
     }
 }
