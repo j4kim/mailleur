@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Campaigns\RelationManagers;
 
+use App\Enums\RecipientStatus;
 use App\Models\Campaign;
 use App\Models\Recipient;
 use Filament\Actions\Action;
@@ -115,6 +116,10 @@ class RecipientsRelationManager extends RelationManager
                         fn(Recipient $recipient): array =>
                         ['mail_body' => $recipient->generateMailBody()]
                     )
+                    ->mutateDataUsing(function (array $data): array {
+                        $data['status'] = RecipientStatus::Customized;
+                        return $data;
+                    })
                     ->schema([
                         RichEditor::make('mail_body')
                     ])

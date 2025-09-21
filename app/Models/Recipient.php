@@ -48,6 +48,7 @@ class Recipient extends Model
     public function generateAndSave()
     {
         $this->mail_body = $this->generateMailBody();
+        $this->status = RecipientStatus::Customized;
         $this->save();
     }
 }
