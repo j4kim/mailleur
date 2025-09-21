@@ -19,6 +19,9 @@ return new class extends Migration
             $table->unique(['campaign_id', 'email']);
             $table->json('data')->nullable();
             $table->text('mail_body')->nullable();
+            $table->unsignedTinyInteger('status')->default(0);
+            $table->dateTime('sent_at')->nullable();
+            $table->dateTime('failed_at')->nullable();
         });
     }
 
