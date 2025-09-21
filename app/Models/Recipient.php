@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RecipientStatus;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ class Recipient extends Model
     {
         return [
             'data' => 'array',
+            'status' => RecipientStatus::class,
         ];
     }
 
@@ -46,6 +48,7 @@ class Recipient extends Model
     public function generateAndSave()
     {
         $this->mail_body = $this->generateMailBody();
+        $this->status = RecipientStatus::Customized;
         $this->save();
     }
 }

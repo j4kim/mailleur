@@ -27,7 +27,7 @@ class Campaign extends Model
 
     public function getMergeTags(): array
     {
-        $columns = $campaign->columns ?? [];
+        $columns = $this->columns ?? [];
         return ['email', ...$columns];
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Campaigns\RelationManagers;
 
+use App\Enums\RecipientStatus;
+use App\Filament\Actions\GenerateAction;
 use App\Models\Campaign;
 use App\Models\Recipient;
 use Filament\Actions\Action;
@@ -16,13 +18,15 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Throwable;
 
@@ -77,13 +81,15 @@ class RecipientsRelationManager extends RelationManager
                     ->searchable()
                     ->toggleable();
             }),
+            TextColumn::make('status')
+                ->badge(),
         ];
 
         return $table
             ->recordTitleAttribute('email')
             ->columns($columns)
             ->filters([
-                //
+                SelectFilter::make('status')->options(RecipientStatus::class)
             ])
             ->headerActions([
                 CreateAction::make()->outlined(),
@@ -105,28 +111,36 @@ class RecipientsRelationManager extends RelationManager
                     }),
             ])
             ->recordActions([
-                EditAction::make('generate')
-                    ->label(
-                        fn(Recipient $recipient) => $recipient->mail_body ? "Regenerate" : "Generate"
-                    )
-                    ->hidden(fn() => !$campaign->template)
-                    ->mutateRecordDataUsing(
-                        fn(Recipient $recipient): array =>
-                        ['mail_body' => $recipient->generateMailBody()]
-                    )
-                    ->schema([
-                        RichEditor::make('mail_body')
-                    ])
-                    ->slideOver(),
+                GenerateAction::make('generate')
+                    ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Initial),
                 EditAction::make('write')
                     ->label("Write")
-                    ->hidden(fn(Recipient $recipient) => !$recipient->mail_body)
-                    ->schema([
-                        RichEditor::make('mail_body')
-                    ])
+                    ->visible(fn(Recipient $r) => in_array($r->status, [
+                        RecipientStatus::Customized,
+                        RecipientStatus::Ready
+                    ]))
+                    ->schema([RichEditor::make('mail_body')])
                     ->slideOver(),
                 ActionGroup::make([
                     EditAction::make()->label("Edit data"),
+                    GenerateAction::make('regenerate')
+                        ->label("Regenerate")
+                        ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Customized),
+                    Action::make('ready')
+                        ->label("Mark as Ready")
+                        ->visible(fn(Recipient $r) => $r->status === RecipientStatus::Customized)
+                        ->color('primary')
+                        ->icon(Heroicon::Check)
+                        ->action(function (Recipient $r) {
+                            $r->status = RecipientStatus::Ready;
+                            $r->save();
+                        }),
+                    EditAction::make('status')
+                        ->label("Set status")
+                        ->icon(Heroicon::Tag)
+                        ->schema([
+                            ToggleButtons::make('status')->options(RecipientStatus::class)
+                        ]),
                     DeleteAction::make(),
                 ]),
             ])
@@ -136,10 +150,20 @@ class RecipientsRelationManager extends RelationManager
                     BulkAction::make('generate')
                         ->label("Generate / Regenerate selected")
                         ->color('primary')
-                        ->icon('heroicon-m-pencil-square')
+                        ->icon(Heroicon::Bolt)
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
-                            $records->each->generateAndSave();
+                            $records->each(fn(Recipient $r) => $r->generateAndSave());
+                        }),
+                    BulkAction::make('status')
+                        ->label("Set status for selected")
+                        ->color('primary')
+                        ->icon(Heroicon::Tag)
+                        ->schema([
+                            ToggleButtons::make('status')->options(RecipientStatus::class)
+                        ])
+                        ->action(function (Collection $records, array $data) {
+                            $records->each(fn(Recipient $r) => $r->update($data));
                         }),
                 ]),
             ]);
