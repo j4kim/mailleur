@@ -24,6 +24,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
@@ -88,7 +89,7 @@ class RecipientsRelationManager extends RelationManager
             ->recordTitleAttribute('email')
             ->columns($columns)
             ->filters([
-                //
+                SelectFilter::make('status')->options(RecipientStatus::class)
             ])
             ->headerActions([
                 CreateAction::make()->outlined(),
