@@ -153,7 +153,17 @@ class RecipientsRelationManager extends RelationManager
                         ->icon(Heroicon::Bolt)
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
-                            $records->each->generateAndSave();
+                            $records->each(fn(Recipient $r) => $r->generateAndSave());
+                        }),
+                    BulkAction::make('status')
+                        ->label("Set status for selected")
+                        ->color('primary')
+                        ->icon(Heroicon::Tag)
+                        ->schema([
+                            ToggleButtons::make('status')->options(RecipientStatus::class)
+                        ])
+                        ->action(function (Collection $records, array $data) {
+                            $records->each(fn(Recipient $r) => $r->update($data));
                         }),
                 ]),
             ]);
