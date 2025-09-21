@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Campaigns\RelationManagers;
 
 use App\Enums\RecipientStatus;
+use App\Filament\Actions\GenerateAction;
 use App\Models\Campaign;
 use App\Models\Recipient;
 use Filament\Actions\Action;
@@ -108,40 +109,29 @@ class RecipientsRelationManager extends RelationManager
                     }),
             ])
             ->recordActions([
-                EditAction::make('generate')
-                    ->label(
-                        fn(Recipient $recipient) => $recipient->mail_body ? "Regenerate" : "Generate"
-                    )
-                    ->hidden(fn() => !$campaign->template)
-                    ->mutateRecordDataUsing(
-                        fn(Recipient $recipient): array =>
-                        ['mail_body' => $recipient->generateMailBody()]
-                    )
-                    ->mutateDataUsing(function (array $data): array {
-                        $data['status'] = RecipientStatus::Customized;
-                        return $data;
-                    })
-                    ->schema([
-                        RichEditor::make('mail_body')
-                    ])
-                    ->slideOver(),
+                GenerateAction::make('generate')
+                    ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Initial),
                 EditAction::make('write')
                     ->label("Write")
-                    ->hidden(fn(Recipient $recipient) => !$recipient->mail_body)
-                    ->schema([
-                        RichEditor::make('mail_body')
-                    ])
+                    ->visible(fn(Recipient $r) => in_array($r->status, [
+                        RecipientStatus::Customized,
+                        RecipientStatus::Ready
+                    ]))
+                    ->schema([RichEditor::make('mail_body')])
                     ->slideOver(),
                 ActionGroup::make([
                     EditAction::make()->label("Edit data"),
+                    GenerateAction::make('regenerate')
+                        ->label("Regenerate")
+                        ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Customized),
                     Action::make('ready')
                         ->label("Mark as Ready")
-                        ->visible(fn(Recipient $recipient) => $recipient->status === RecipientStatus::Customized)
+                        ->visible(fn(Recipient $r) => $r->status === RecipientStatus::Customized)
                         ->color('primary')
                         ->icon(Heroicon::Check)
-                        ->action(function (Recipient $recipient) {
-                            $recipient->status = RecipientStatus::Ready;
-                            $recipient->save();;
+                        ->action(function (Recipient $r) {
+                            $r->status = RecipientStatus::Ready;
+                            $r->save();
                         }),
                     DeleteAction::make(),
                 ]),
@@ -152,7 +142,7 @@ class RecipientsRelationManager extends RelationManager
                     BulkAction::make('generate')
                         ->label("Generate / Regenerate selected")
                         ->color('primary')
-                        ->icon('heroicon-m-pencil-square')
+                        ->icon(Heroicon::PencilSquare)
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
                             $records->each->generateAndSave();
