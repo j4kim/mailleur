@@ -20,6 +20,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
@@ -133,6 +134,14 @@ class RecipientsRelationManager extends RelationManager
                     ->slideOver(),
                 ActionGroup::make([
                     EditAction::make()->label("Edit data"),
+                    Action::make('ready')
+                        ->label("Mark as Ready")
+                        ->color('primary')
+                        ->icon(Heroicon::Check)
+                        ->action(function (Recipient $recipient) {
+                            $recipient->status = RecipientStatus::Ready;
+                            $recipient->save();;
+                        }),
                     DeleteAction::make(),
                 ]),
             ])
