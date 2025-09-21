@@ -136,6 +136,7 @@ class RecipientsRelationManager extends RelationManager
                     EditAction::make()->label("Edit data"),
                     Action::make('ready')
                         ->label("Mark as Ready")
+                        ->visible(fn(Recipient $recipient) => $recipient->status === RecipientStatus::Customized)
                         ->color('primary')
                         ->icon(Heroicon::Check)
                         ->action(function (Recipient $recipient) {
