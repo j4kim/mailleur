@@ -6,6 +6,7 @@ use App\Enums\RecipientStatus;
 use App\Models\Recipient;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\RichEditor;
+use Filament\Support\Icons\Heroicon;
 
 class GenerateAction extends EditAction
 {
@@ -14,6 +15,8 @@ class GenerateAction extends EditAction
         parent::setUp();
 
         $this->label("Generate");
+
+        $this->icon(Heroicon::Bolt);
 
         $this->schema([
             RichEditor::make('mail_body')

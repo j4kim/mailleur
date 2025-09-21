@@ -18,6 +18,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -133,6 +134,12 @@ class RecipientsRelationManager extends RelationManager
                             $r->status = RecipientStatus::Ready;
                             $r->save();
                         }),
+                    EditAction::make('status')
+                        ->label("Set status")
+                        ->icon(Heroicon::Tag)
+                        ->schema([
+                            ToggleButtons::make('status')->options(RecipientStatus::class)
+                        ]),
                     DeleteAction::make(),
                 ]),
             ])
@@ -142,7 +149,7 @@ class RecipientsRelationManager extends RelationManager
                     BulkAction::make('generate')
                         ->label("Generate / Regenerate selected")
                         ->color('primary')
-                        ->icon(Heroicon::PencilSquare)
+                        ->icon(Heroicon::Bolt)
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
                             $records->each->generateAndSave();
