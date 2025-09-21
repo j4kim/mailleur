@@ -22,7 +22,6 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Throwable;
 
@@ -77,6 +76,8 @@ class RecipientsRelationManager extends RelationManager
                     ->searchable()
                     ->toggleable();
             }),
+            TextColumn::make('status')
+                ->badge(),
         ];
 
         return $table
