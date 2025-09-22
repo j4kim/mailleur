@@ -141,6 +141,10 @@ class RecipientsRelationManager extends RelationManager
                         ->schema([
                             ToggleButtons::make('status')->options(RecipientStatus::class)
                         ]),
+                    Action::make('send')
+                        ->icon(Heroicon::PaperAirplane)
+                        ->action(fn(Recipient $r) => $r->sendOne())
+                        ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Ready),
                     DeleteAction::make(),
                 ]),
             ])

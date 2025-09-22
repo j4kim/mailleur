@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -71,5 +72,13 @@ class Campaign extends Model
                 $recipient->save();
             }
         });
+    }
+
+    public function getFrom(): string
+    {
+        /** @var Team $team */
+        $team = Filament::getTenant();
+        return $team->smtp_config['from']
+            ?? $team->smtp_config['username'];
     }
 }

@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use App\Enums\RecipientStatus;
+use App\Mail\CampaignMail;
+use Exception;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Mail;
 
 class Recipient extends Model
 {
@@ -50,5 +54,30 @@ class Recipient extends Model
         $this->mail_body = $this->generateMailBody();
         $this->status = RecipientStatus::Customized;
         $this->save();
+    }
+
+    public static function configureSmtp()
+    {
+        /** @var Team $team */
+        $team = Filament::getTenant();
+        $team->configureMailer();
+    }
+
+    public function send()
+    {
+        if (!$this->mail_body) {
+            throw new Exception("No mail body for recipient $this->email");
+        }
+        Mail::to($this->email)
+            ->send(new CampaignMail($this));
+        $this->status = RecipientStatus::Sent;
+        $this->sent_at = now();
+        $this->save();
+    }
+
+    public function sendOne()
+    {
+        self::configureSmtp();
+        $this->send();
     }
 }

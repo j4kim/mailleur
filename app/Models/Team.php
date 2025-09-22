@@ -51,4 +51,22 @@ class Team extends Model
 
         $this->members()->attach($user, ['is_admin' => $is_admin]);
     }
+
+    public function configureMailer()
+    {
+        $smtpc = $this->smtp_config;
+
+        foreach (['host', 'port', 'password', 'username'] as $key) {
+            if (!$smtpc[$key]) {
+                throw new Exception("$key missing in Team SMTP config");
+            }
+        }
+
+        config([
+            'mail.mailers.smtp' => array_merge(
+                config('mail.mailers.smtp'),
+                $smtpc
+            )
+        ]);
+    }
 }
