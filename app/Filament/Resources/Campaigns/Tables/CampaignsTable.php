@@ -18,13 +18,17 @@ class CampaignsTable
                 TextColumn::make('created_at')
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
                 TextColumn::make('updated_at')
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('subject')
                     ->searchable(),
+                TextColumn::make('recipients_count')
+                    ->counts('recipients')
+                    ->label("Recipients")
+                    ->toggleable(),
             ])
             ->filters([
                 //

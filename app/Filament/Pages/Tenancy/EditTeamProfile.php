@@ -5,8 +5,6 @@ namespace App\Filament\Pages\Tenancy;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Tenancy\EditTenantProfile;
-use Filament\Schemas\Components\Flex;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
