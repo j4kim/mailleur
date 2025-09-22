@@ -12,7 +12,7 @@ class EditTeamProfile extends EditTenantProfile
 
     public static function getLabel(): string
     {
-        return 'Team profile';
+        return 'Team settings';
     }
 
     public function form(Schema $schema): Schema
