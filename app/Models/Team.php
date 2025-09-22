@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Mail\TeamInvitation;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Mail;
 
 use function App\Tools\emailToName;
 
@@ -37,6 +39,8 @@ class Team extends Model
             $user->password = "to be reset";
             $user->save();
         }
+
+        Mail::to($user)->send(new TeamInvitation($this));
 
         $this->members()->attach($user, ['is_admin' => $is_admin]);
     }
