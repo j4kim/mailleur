@@ -13,6 +13,13 @@ use function App\Tools\emailToName;
 
 class Team extends Model
 {
+    protected function casts(): array
+    {
+        return [
+            'smtp_config' => 'encrypted:array',
+        ];
+    }
+
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withPivot('is_admin');

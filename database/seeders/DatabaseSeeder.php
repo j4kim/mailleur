@@ -21,7 +21,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $team = Team::create([
-            'name' => 'Test Team'
+            'name' => 'Test Team',
+            'smtp_config' => [
+                'host' => config('mail.mailers.smtp.host'),
+                'port' => config('mail.mailers.smtp.port'),
+                'password' => config('mail.mailers.smtp.password'),
+                'username' => config('mail.mailers.smtp.username'),
+            ],
         ]);
 
         $team->members()->attach($user, ['is_admin' => true]);

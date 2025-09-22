@@ -15,40 +15,41 @@ class EditTeamProfile extends EditTenantProfile
 {
     protected string $view = 'filament.edit-team';
 
-    private bool $iAmAdmin;
-
     public static function getLabel(): string
     {
         return 'Team settings';
     }
 
-    public function beforeFill()
-    {
-        $this->iAmAdmin = Auth::user()->isAdminOf($this->tenant);
-    }
-
     public function form(Schema $schema): Schema
     {
+        $iAmAdmin = Auth::user()->isAdminOf($this->tenant);
         return $schema
             ->components([
                 TextInput::make('name'),
                 Section::make('SMTP config')
-                    ->columns([
-                        'sm' => 2,
-                        'xl' => 4,
-                    ])
+                    ->columns(['sm' => 2])
                     ->schema([
-                        TextInput::make('host'),
-                        TextInput::make('port'),
-                        TextInput::make('username'),
-                        TextInput::make('password'),
+                        TextInput::make('smtp_config.host'),
+                        TextInput::make('smtp_config.port')
+                            ->integer(),
+                        TextInput::make('smtp_config.username')
+                            ->email()
+                            ->hint("Must be an email"),
+                        TextInput::make('smtp_config.password')
+                            ->password()
+                            ->revealable()
+                            ->hint("The email address password"),
+                        TextInput::make('smtp_config.from')
+                            ->email()
+                            ->hint("Keep blank to use username"),
                     ])
-                    ->hidden(!$this->iAmAdmin),
-            ])->disabled(!$this->iAmAdmin);
+                    ->hidden(!$iAmAdmin),
+            ])->disabled(!$iAmAdmin);
     }
 
     protected function getSaveFormAction(): Action
     {
-        return parent::getSaveFormAction()->hidden(!$this->iAmAdmin);;
+        $iAmAdmin = Auth::user()->isAdminOf($this->tenant);
+        return parent::getSaveFormAction()->hidden(!$iAmAdmin);;
     }
 }
