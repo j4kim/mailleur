@@ -13,6 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Livewire\Component;
 
 class ListUsers extends Component implements HasActions, HasSchemas, HasTable
@@ -25,10 +26,9 @@ class ListUsers extends Component implements HasActions, HasSchemas, HasTable
     {
         /** @var Team $team */
         $team = Filament::getTenant();
-        $query = User::whereAttachedTo($team);
-        
+
         return $table
-            ->query($query)
+            ->relationship(fn (): BelongsToMany => $team->members())
             ->heading("Users")
             ->columns([
                 TextColumn::make('email'),
