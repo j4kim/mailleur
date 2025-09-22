@@ -3,9 +3,11 @@
 namespace App\Livewire;
 
 use App\Models\Team;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\DetachAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +19,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Throwable;
 
@@ -61,7 +64,8 @@ class ListUsers extends Component implements HasActions, HasSchemas, HasTable
                     }),
             ])
             ->recordActions([
-                // ...
+                DetachAction::make()
+                    ->hidden(fn(User $u) => $u->id == Auth::id()),
             ])
             ->toolbarActions([
                 // ...
