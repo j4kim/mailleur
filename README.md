@@ -1,5 +1,8 @@
 # Mailleur
 
+> [!NOTE]
+> Simpler, Python-only version still accessible under [python](https://github.com/j4kim/mailleur/tree/python) branch.
+
 ## Set up
 
     composer install
