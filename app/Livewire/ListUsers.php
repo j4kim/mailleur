@@ -34,6 +34,7 @@ class ListUsers extends Component implements HasActions, HasSchemas, HasTable
     {
         /** @var Team $team */
         $team = Filament::getTenant();
+        $iAmAdmin = Auth::user()->isAdminOf($team);
 
         return $table
             ->relationship(fn(): BelongsToMany => $team->members())
@@ -42,7 +43,7 @@ class ListUsers extends Component implements HasActions, HasSchemas, HasTable
                 TextColumn::make('email'),
                 TextColumn::make('name'),
                 ToggleColumn::make('is_admin')
-                    ->disabled(fn(User $u) => $u->id == Auth::id()),
+                    ->disabled(fn(User $u) => $u->id == Auth::id() || !$iAmAdmin),
             ])
             ->filters([
                 // ...
@@ -63,11 +64,12 @@ class ListUsers extends Component implements HasActions, HasSchemas, HasTable
                                 ->status('danger')
                                 ->send();
                         }
-                    }),
+                    })->hidden(!$iAmAdmin),
             ])
             ->recordActions([
                 DetachAction::make()
-                    ->hidden(fn(User $u) => $u->id == Auth::id()),
+                    ->disabled(fn(User $u) => $u->id == Auth::id())
+                    ->hidden(!$iAmAdmin),
             ])
             ->toolbarActions([
                 // ...

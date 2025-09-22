@@ -66,4 +66,9 @@ class User extends Authenticatable implements HasTenants
     {
         return $this->teams()->whereKey($tenant)->exists();
     }
+
+    public function isAdminOf(Model $tenant): bool
+    {
+        return $this->teams()->whereKey($tenant)->wherePivot('is_admin', 1)->exists();
+    }
 }
