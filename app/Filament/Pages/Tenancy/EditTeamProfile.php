@@ -8,6 +8,8 @@ use Filament\Schemas\Schema;
 
 class EditTeamProfile extends EditTenantProfile
 {
+    protected string $view = 'filament.edit-team';
+
     public static function getLabel(): string
     {
         return 'Team profile';
