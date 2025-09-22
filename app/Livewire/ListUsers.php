@@ -8,6 +8,7 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\DetachAction;
+use Filament\Actions\EditAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
@@ -64,6 +65,11 @@ class ListUsers extends Component implements HasActions, HasSchemas, HasTable
                     }),
             ])
             ->recordActions([
+                EditAction::make()
+                    ->schema([
+                        Checkbox::make('is_admin'),
+                    ])
+                    ->hidden(fn(User $u) => $u->id == Auth::id()),
                 DetachAction::make()
                     ->hidden(fn(User $u) => $u->id == Auth::id()),
             ])
