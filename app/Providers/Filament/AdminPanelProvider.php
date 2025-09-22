@@ -33,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->tenantProfile(EditTeamProfile::class)
             ->path('/')
             ->login()
+            ->registration()
             ->colors([
                 'primary' => Color::Amber,
             ])
