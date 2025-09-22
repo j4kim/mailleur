@@ -26,7 +26,7 @@ class RegisterTeam extends RegisterTenant
     {
         $team = Team::create($data);
 
-        $team->members()->attach(auth()->user());
+        $team->members()->attach(auth()->user(), ['is_admin' => true]);
 
         return $team;
     }

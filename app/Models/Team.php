@@ -10,7 +10,7 @@ class Team extends Model
 {
     public function members(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->withPivot('is_admin');
     }
 
     public function campaigns(): HasMany

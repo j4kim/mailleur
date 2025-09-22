@@ -33,6 +33,7 @@ class ListUsers extends Component implements HasActions, HasSchemas, HasTable
             ->columns([
                 TextColumn::make('email'),
                 TextColumn::make('name'),
+                TextColumn::make('is_admin'),
             ])
             ->filters([
                 // ...

@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test Team'
         ]);
 
-        $team->members()->attach($user);
+        $team->members()->attach($user, ['is_admin' => true]);
 
         $campaign = $team->campaigns()->create([
             'subject' => "Hello",

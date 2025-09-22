@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('team_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('team_id')->constrained()->cascadeOnDelete();
+            $table->boolean('is_admin')->default(false);
             $table->unique(['user_id', 'team_id']);
         });
     }
