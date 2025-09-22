@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Campaign;
+use App\Models\Team;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -14,12 +15,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
 
-        $campaign = Campaign::create([
+        $team = Team::create([
+            'name' => 'Test Team'
+        ]);
+
+        $team->members()->attach($user);
+
+        $campaign = $team->campaigns()->create([
             'subject' => "Hello",
             'template' => [
                 "type" => "doc",
@@ -27,8 +34,8 @@ class DatabaseSeeder extends Seeder
                     [
                         "type" => "paragraph",
                         "content" => [
-                            [ "type" => "text", "text" => "Salut ", ],
-                            [ "type" => "mergeTag", "attrs" => ["id" => "name"], ],
+                            ["type" => "text", "text" => "Salut "],
+                            ["type" => "mergeTag", "attrs" => ["id" => "name"]],
                         ],
                     ],
                 ],
