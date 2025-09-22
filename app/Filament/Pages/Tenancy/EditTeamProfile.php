@@ -3,6 +3,7 @@
 namespace App\Filament\Pages\Tenancy;
 
 use Filament\Actions\Action;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Tenancy\EditTenantProfile;
 use Filament\Schemas\Components\Section;
@@ -37,11 +38,28 @@ class EditTeamProfile extends EditTenantProfile
                             ->password()
                             ->revealable()
                             ->hint("The email address password"),
-                        TextInput::make('smtp_config.from')
-                            ->email()
-                            ->hint("Keep blank to use username"),
                     ])
                     ->hidden(!$iAmAdmin),
+                Section::make('Defaults')
+                    ->columns(['sm' => 2])
+                    ->schema([
+                        TextInput::make('defaults.from.address')
+                            ->label("From address")
+                            ->hint("Must be on same domain as SMTP username")
+                            ->email(),
+                        TextInput::make('defaults.from.name')
+                            ->label("From name"),
+                        TextInput::make('defaults.replyTo'),
+                        null,
+                        Repeater::make('defaults.cc')
+                            ->simple(
+                                TextInput::make('email')->email()->required()
+                            ),
+                        Repeater::make('defaults.bcc')
+                            ->simple(
+                                TextInput::make('email')->email()->required()
+                            ),
+                    ]),
             ])->disabled(!$iAmAdmin);
     }
 

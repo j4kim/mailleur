@@ -78,7 +78,7 @@ class Campaign extends Model
     {
         /** @var Team $team */
         $team = Filament::getTenant();
-        return $team->smtp_config['from']
+        return @$team->defaults['from']['address']
             ?? $team->smtp_config['username'];
     }
 }

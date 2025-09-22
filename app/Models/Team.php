@@ -17,6 +17,7 @@ class Team extends Model
     {
         return [
             'smtp_config' => 'encrypted:array',
+            'defaults' => 'array',
         ];
     }
 
