@@ -8,7 +8,6 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\DetachAction;
-use Filament\Actions\EditAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
@@ -16,6 +15,7 @@ use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
@@ -41,7 +41,8 @@ class ListUsers extends Component implements HasActions, HasSchemas, HasTable
             ->columns([
                 TextColumn::make('email'),
                 TextColumn::make('name'),
-                TextColumn::make('is_admin'),
+                ToggleColumn::make('is_admin')
+                    ->disabled(fn(User $u) => $u->id == Auth::id()),
             ])
             ->filters([
                 // ...
@@ -65,11 +66,6 @@ class ListUsers extends Component implements HasActions, HasSchemas, HasTable
                     }),
             ])
             ->recordActions([
-                EditAction::make()
-                    ->schema([
-                        Checkbox::make('is_admin'),
-                    ])
-                    ->hidden(fn(User $u) => $u->id == Auth::id()),
                 DetachAction::make()
                     ->hidden(fn(User $u) => $u->id == Auth::id()),
             ])
