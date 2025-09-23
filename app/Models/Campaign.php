@@ -14,6 +14,13 @@ use League\Csv\Reader;
 
 class Campaign extends Model
 {
+    protected static function booted(): void
+    {
+        static::creating(function (Campaign $campaign) {
+            $campaign->envelope = $campaign->team->defaults;
+        });
+    }
+
     protected function casts(): array
     {
         return [
