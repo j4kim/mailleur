@@ -39,8 +39,9 @@ class EditTeamProfile extends EditTenantProfile
                             ->revealable()
                             ->hint("The email address password"),
                     ])
+                    ->collapsed()
                     ->hidden(!$iAmAdmin),
-                Section::make('Defaults')
+                Section::make('Envelope defaults')
                     ->columns(['sm' => 2])
                     ->schema([
                         TextInput::make('defaults.from.address')
@@ -59,7 +60,8 @@ class EditTeamProfile extends EditTenantProfile
                             ->simple(
                                 TextInput::make('email')->email()->required()
                             ),
-                    ]),
+                    ])
+                    ->collapsed(),
             ])->disabled(!$iAmAdmin);
     }
 
