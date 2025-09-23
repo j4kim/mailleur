@@ -74,12 +74,4 @@ class Campaign extends Model
             }
         });
     }
-
-    public function getFrom(): string
-    {
-        /** @var Team $team */
-        $team = Filament::getTenant();
-        return @$team->defaults['from']['address']
-            ?? $team->smtp_config['username'];
-    }
 }

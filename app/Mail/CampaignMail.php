@@ -4,9 +4,12 @@ namespace App\Mail;
 
 use App\Models\Campaign;
 use App\Models\Recipient;
+use App\Models\Team;
+use Filament\Facades\Filament;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -27,6 +30,21 @@ class CampaignMail extends Mailable
         $this->campaign = $recipient->campaign;
     }
 
+    public function getTeam(): Team
+    {
+        return Filament::getTenant();
+    }
+
+    public function getFrom(): Address|string
+    {
+        $from = $this->campaign->envelope['from'];
+        if (!empty($from['address'])) {
+            return new Address(...$from);
+        }
+        $team = $this->getTeam();
+        return $team->smtp_config['username'];
+    }
+
     /**
      * Get the message envelope.
      */
@@ -34,7 +52,7 @@ class CampaignMail extends Mailable
     {
         return new Envelope(
             subject: $this->campaign->subject,
-            from: $this->campaign->getFrom(),
+            from: $this->getFrom(),
         );
     }
 
