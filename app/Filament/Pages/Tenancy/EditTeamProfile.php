@@ -50,16 +50,17 @@ class EditTeamProfile extends EditTenantProfile
                             ->email(),
                         TextInput::make('defaults.from.name')
                             ->label("From name"),
-                        TextInput::make('defaults.replyTo'),
-                        null,
-                        Repeater::make('defaults.cc')
-                            ->simple(
-                                TextInput::make('email')->email()->required()
-                            ),
-                        Repeater::make('defaults.bcc')
-                            ->simple(
-                                TextInput::make('email')->email()->required()
-                            ),
+                        TextInput::make('defaults.replyTo.address')
+                            ->label("Reply to address")
+                            ->email(),
+                        TextInput::make('defaults.replyTo.name')
+                            ->label("Reply to name"),
+                        Repeater::make('defaults.cc')->simple(
+                            TextInput::make('email')->email()->required()
+                        ),
+                        Repeater::make('defaults.bcc')->simple(
+                            TextInput::make('email')->email()->required()
+                        ),
                     ])
                     ->collapsed(),
             ])->disabled(!$iAmAdmin);
