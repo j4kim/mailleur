@@ -213,6 +213,19 @@ class RecipientsRelationManager extends RelationManager
                         ->action(function (Collection $records, array $data) {
                             $records->each(fn(Recipient $r) => $r->update($data));
                         }),
+                    BulkAction::make('send')
+                        ->label("Send selected")
+                        ->color('success')
+                        ->icon(Heroicon::PaperAirplane)
+                        ->action(function (Collection $records, array $data) {
+                            [$successCount, $errorCount] = Recipient::sendMany($records);
+                            if ($successCount) {
+                                successNotif("Mail sent to " . str("recipient")->plural($successCount, true));
+                            }
+                            if ($errorCount) {
+                                errorNotif("Sending failed for " . str("recipient")->plural($errorCount, true));
+                            }
+                        }),
                 ]),
             ]);
     }

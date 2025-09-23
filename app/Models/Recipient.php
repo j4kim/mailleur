@@ -8,6 +8,7 @@ use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Mail;
@@ -85,5 +86,20 @@ class Recipient extends Model
     {
         self::configureSmtp();
         $this->send();
+    }
+
+    public static function sendMany(Collection $recipients): array
+    {
+        $successCount = 0;
+        $errorCount = 0;
+        foreach ($recipients as $recipient) {
+            try {
+                $recipient->send();
+                $successCount++;
+            } catch (Exception $e) {
+                $errorCount++;
+            }
+        }
+        return [$successCount, $errorCount];
     }
 }
