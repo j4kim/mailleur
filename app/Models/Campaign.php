@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Filament\Facades\Filament;
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -73,5 +73,19 @@ class Campaign extends Model
                 $recipient->save();
             }
         });
+    }
+
+    public function renderTemplate()
+    {
+        if (!$this->template) {
+            return "";
+        }
+        $mergeTags = collect($this->getMergeTags())
+            ->mapWithKeys(fn($c) => [$c => "{{ $c }}"])
+            ->toArray();
+        $rendered = RichContentRenderer::make($this->template)
+            ->mergeTags($mergeTags)
+            ->toHtml();
+        return "<div class=\"prose dark:prose-invert\">$rendered</div>";
     }
 }

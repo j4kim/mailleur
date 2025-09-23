@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Campaigns\Schemas;
 
-use App\Filament\Infolists\Components\RichTextEntry;
 use App\Models\Campaign;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
@@ -24,8 +23,18 @@ class CampaignInfolist
                     ->placeholder('-'),
                 TextEntry::make('subject'),
                 TextEntry::make('columns'),
-                RichTextEntry::make('template')
-                    ->columnSpanFull(),
+
+                Section::make('Template')
+                    ->columnSpanFull()
+                    ->schema([
+                        TextEntry::make('template')
+                            ->hiddenLabel()
+                            ->state(function (Campaign $campaign) {
+                                return $campaign->renderTemplate();
+                            })
+                            ->html()
+                    ]),
+
 
                 Section::make('Envelope')
                     ->columns(2)
