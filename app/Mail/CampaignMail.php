@@ -55,6 +55,15 @@ class CampaignMail extends Mailable
     }
 
     /**
+     * @return array<Address>
+     */
+    public function getAddresses(string $key): array
+    {
+        $cc = collect($this->campaign->envelope[$key]);
+        return $cc->map(fn($a) => new Address(...$a))->toArray();
+    }
+
+    /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
@@ -63,6 +72,8 @@ class CampaignMail extends Mailable
             subject: $this->campaign->subject,
             from: $this->getFrom(),
             replyTo: $this->getReplyTo(),
+            cc: $this->getAddresses("cc"),
+            bcc: $this->getAddresses("bcc"),
         );
     }
 
