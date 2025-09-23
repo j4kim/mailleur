@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Validator;
 use League\Csv\Info;
 use League\Csv\Reader;
 
+use function App\Tools\prose;
+
 class Campaign extends Model
 {
     protected static function booted(): void
@@ -94,7 +96,7 @@ class Campaign extends Model
         $rendered = RichContentRenderer::make($this->template)
             ->mergeTags($mergeTags)
             ->toHtml();
-        return "<div class=\"prose dark:prose-invert\">$rendered</div>";
+        return prose($rendered);
     }
 
     public function getAddress(string $key): ?Address
