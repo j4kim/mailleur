@@ -58,12 +58,14 @@ class EditTeamProfile extends EditTenantProfile
                             ->email(),
                         TextInput::make('defaults.replyTo.name')
                             ->label("Reply to name"),
-                        Repeater::make('defaults.cc')->simple(
-                            TextInput::make('email')->email()->required()
-                        ),
-                        Repeater::make('defaults.bcc')->simple(
-                            TextInput::make('email')->email()->required()
-                        ),
+                        Repeater::make('defaults.cc')->schema([
+                            TextInput::make('email')->email()->required(),
+                            TextInput::make('name'),
+                        ])->columns(2),
+                        Repeater::make('defaults.bcc')->schema([
+                            TextInput::make('email')->email()->required(),
+                            TextInput::make('name'),
+                        ])->columns(2),
                     ])
                     ->collapsed()
                     ->persistCollapsed(),

@@ -44,12 +44,14 @@ class CampaignForm
                             ->email(),
                         TextInput::make('envelope.replyTo.name')
                             ->label("Reply to name"),
-                        Repeater::make('envelope.cc')->simple(
-                            TextInput::make('email')->email()->required()
-                        ),
-                        Repeater::make('envelope.bcc')->simple(
-                            TextInput::make('email')->email()->required()
-                        ),
+                        Repeater::make('envelope.cc')->schema([
+                            TextInput::make('email')->email()->required(),
+                            TextInput::make('name'),
+                        ])->columns(2),
+                        Repeater::make('envelope.bcc')->schema([
+                            TextInput::make('email')->email()->required(),
+                            TextInput::make('name'),
+                        ])->columns(2),
                     ])
                     ->columnSpanFull()
                     ->collapsed()
