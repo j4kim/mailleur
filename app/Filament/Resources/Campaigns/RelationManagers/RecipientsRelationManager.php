@@ -6,6 +6,7 @@ use App\Enums\RecipientStatus;
 use App\Filament\Actions\GenerateAction;
 use App\Models\Campaign;
 use App\Models\Recipient;
+use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
@@ -175,7 +176,14 @@ class RecipientsRelationManager extends RelationManager
                         ]),
                     Action::make('send')
                         ->icon(Heroicon::PaperAirplane)
-                        ->action(fn(Recipient $r) => $r->sendOne())
+                        ->action(function (Recipient $r) {
+                            try {
+                                $r->sendOne();
+                                successNotif("Mail sent to $r->email");
+                            } catch (Exception $e) {
+                                errorNotif($e->getMessage());
+                            }
+                        })
                         ->visible(fn(Recipient $r) => in_array($r->status, [
                             RecipientStatus::Customized,
                             RecipientStatus::Ready

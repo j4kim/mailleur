@@ -68,11 +68,17 @@ class Recipient extends Model
         if (!$this->mail_body) {
             throw new Exception("No mail body for recipient $this->email");
         }
-        Mail::to($this->email)
-            ->send(new CampaignMail($this));
-        $this->status = RecipientStatus::Sent;
-        $this->sent_at = now();
-        $this->save();
+        try {
+            Mail::to($this->email)->send(new CampaignMail($this));
+            $this->status = RecipientStatus::Sent;
+            $this->sent_at = now();
+            $this->save();
+        } catch (Exception $e) {
+            $this->status = RecipientStatus::Failed;
+            $this->failed_at = now();
+            $this->save();
+            throw $e;
+        }
     }
 
     public function sendOne()
