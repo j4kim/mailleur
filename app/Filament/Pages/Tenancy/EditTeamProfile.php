@@ -25,6 +25,7 @@ class EditTeamProfile extends EditTenantProfile
         return $schema
             ->components([
                 TextInput::make('name'),
+
                 Section::make('SMTP config')
                     ->columns(['sm' => 2])
                     ->schema([
@@ -40,7 +41,9 @@ class EditTeamProfile extends EditTenantProfile
                             ->hint("The email address password"),
                     ])
                     ->collapsed()
+                    ->persistCollapsed()
                     ->hidden(!$iAmAdmin),
+
                 Section::make('Envelope defaults')
                     ->columns(['sm' => 2])
                     ->schema([
@@ -62,7 +65,9 @@ class EditTeamProfile extends EditTenantProfile
                             TextInput::make('email')->email()->required()
                         ),
                     ])
-                    ->collapsed(),
+                    ->collapsed()
+                    ->persistCollapsed(),
+
             ])->disabled(!$iAmAdmin);
     }
 
