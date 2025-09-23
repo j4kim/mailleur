@@ -40,10 +40,10 @@ class CampaignInfolist
                     ->columns(2)
                     ->schema([
                         TextEntry::make("envelope.from")->state(
-                            fn(Campaign $c) => formatAddress($c->envelope['from'])
+                            fn(Campaign $c) => formatAddress(@$c->envelope['from'])
                         ),
                         TextEntry::make("envelope.replyTo")->state(
-                            fn(Campaign $c) => formatAddress($c->envelope['replyTo'])
+                            fn(Campaign $c) => formatAddress(@$c->envelope['replyTo'])
                         ),
                         TextEntry::make("envelope.cc")->formatStateUsing(
                             fn(array $state) => formatAddress($state)

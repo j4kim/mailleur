@@ -12,9 +12,9 @@ function emailToName(string $email): string
     return $name;
 }
 
-function formatAddress(array $addr): string
+function formatAddress(?array $addr): string
 {
-    if (!$addr['address']) return "";
+    if (!$addr || !$addr['address']) return "";
     if (!$addr['name']) return $addr['address'];
     return "$addr[name] <$addr[address]>";
 }
