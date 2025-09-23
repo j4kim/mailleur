@@ -25,6 +25,7 @@ class EditTeamProfile extends EditTenantProfile
             TextInput::make("$baseKey.from.address")
                 ->label("From address")
                 ->hint("Must be on same domain as SMTP username")
+                ->belowContent("⚠️ On Infomaniak, must be exactly the SMTP username.")
                 ->email(),
             TextInput::make("$baseKey.from.name")
                 ->label("From name"),
