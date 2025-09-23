@@ -37,7 +37,7 @@ class CampaignMail extends Mailable
 
     public function getAddress(string $key): ?Address
     {
-        $addr = $this->campaign->envelope[$key];
+        $addr = @$this->campaign->envelope[$key];
         if (!empty($addr['address'])) {
             return new Address(...$addr);
         }
@@ -60,7 +60,7 @@ class CampaignMail extends Mailable
      */
     public function getAddresses(string $key): array
     {
-        $cc = collect($this->campaign->envelope[$key]);
+        $cc = collect(@$this->campaign->envelope[$key]);
         return $cc->map(fn($a) => new Address(...$a))->toArray();
     }
 
