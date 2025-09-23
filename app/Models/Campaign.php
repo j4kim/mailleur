@@ -19,6 +19,7 @@ class Campaign extends Model
         return [
             'template' => 'array',
             'columns' => 'array',
+            'envelope' => 'array',
         ];
     }
 

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('subject');
             $table->json('template')->nullable();
             $table->json('columns')->nullable();
+            $table->json('envelope')->nullable();
         });
     }
 
