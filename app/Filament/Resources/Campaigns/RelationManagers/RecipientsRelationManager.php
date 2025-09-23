@@ -144,7 +144,11 @@ class RecipientsRelationManager extends RelationManager
                     Action::make('send')
                         ->icon(Heroicon::PaperAirplane)
                         ->action(fn(Recipient $r) => $r->sendOne())
-                        ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Ready),
+                        ->visible(fn(Recipient $r) => in_array($r->status, [
+                            RecipientStatus::Customized,
+                            RecipientStatus::Ready
+                        ]))
+                        ->color('success'),
                     DeleteAction::make(),
                 ]),
             ])
