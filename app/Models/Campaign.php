@@ -6,6 +6,7 @@ use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -94,5 +95,34 @@ class Campaign extends Model
             ->mergeTags($mergeTags)
             ->toHtml();
         return "<div class=\"prose dark:prose-invert\">$rendered</div>";
+    }
+
+    public function getAddress(string $key): ?Address
+    {
+        $addr = @$this->envelope[$key];
+        if (!empty($addr['address'])) {
+            return new Address(...$addr);
+        }
+        return null;
+    }
+
+    public function getFrom(): Address
+    {
+        return $this->getAddress("from") ?? new Address($this->team->smtp_config['username']);
+    }
+
+    public function getReplyTo(): ?array
+    {
+        $address = $this->getAddress("replyTo");
+        return $address ? [$address] : null;
+    }
+
+    /**
+     * @return array<Address>
+     */
+    public function getAddresses(string $key): array
+    {
+        $cc = collect(@$this->envelope[$key]);
+        return $cc->map(fn($a) => new Address(...$a))->toArray();
     }
 }
