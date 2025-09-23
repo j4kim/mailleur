@@ -49,9 +49,10 @@ class CampaignMail extends Mailable
         return $this->getAddress("from") ?? $this->getTeam()->smtp_config['username'];
     }
 
-    public function getReplyTo(): ?Address
+    public function getReplyTo(): ?array
     {
-        return $this->getAddress("replyTo");
+        $address = $this->getAddress("replyTo");
+        return $address ? [$address] : null;
     }
 
     /**
