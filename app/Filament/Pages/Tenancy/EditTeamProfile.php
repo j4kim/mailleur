@@ -19,6 +19,31 @@ class EditTeamProfile extends EditTenantProfile
         return 'Team settings';
     }
 
+    public static function getEnvelopeSchema(string $baseKey): array
+    {
+        return [
+            TextInput::make("$baseKey.from.address")
+                ->label("From address")
+                ->hint("Must be on same domain as SMTP username")
+                ->email(),
+            TextInput::make("$baseKey.from.name")
+                ->label("From name"),
+            TextInput::make("$baseKey.replyTo.address")
+                ->label("Reply to address")
+                ->email(),
+            TextInput::make("$baseKey.replyTo.name")
+                ->label("Reply to name"),
+            Repeater::make("$baseKey.cc")->schema([
+                TextInput::make('address')->email()->required(),
+                TextInput::make('name'),
+            ])->columns(2),
+            Repeater::make("$baseKey.bcc")->schema([
+                TextInput::make('address')->email()->required(),
+                TextInput::make('name'),
+            ])->columns(2),
+        ];
+    }
+
     public function form(Schema $schema): Schema
     {
         $iAmAdmin = Auth::user()->isAdminOf($this->tenant);
@@ -45,28 +70,8 @@ class EditTeamProfile extends EditTenantProfile
                     ->hidden(!$iAmAdmin),
 
                 Section::make('Envelope defaults')
-                    ->columns(['sm' => 2])
-                    ->schema([
-                        TextInput::make('defaults.from.address')
-                            ->label("From address")
-                            ->hint("Must be on same domain as SMTP username")
-                            ->email(),
-                        TextInput::make('defaults.from.name')
-                            ->label("From name"),
-                        TextInput::make('defaults.replyTo.address')
-                            ->label("Reply to address")
-                            ->email(),
-                        TextInput::make('defaults.replyTo.name')
-                            ->label("Reply to name"),
-                        Repeater::make('defaults.cc')->schema([
-                            TextInput::make('address')->email()->required(),
-                            TextInput::make('name'),
-                        ])->columns(2),
-                        Repeater::make('defaults.bcc')->schema([
-                            TextInput::make('address')->email()->required(),
-                            TextInput::make('name'),
-                        ])->columns(2),
-                    ])
+                    ->columns(2)
+                    ->schema(self::getEnvelopeSchema("defaults"))
                     ->collapsed()
                     ->persistCollapsed(),
 
