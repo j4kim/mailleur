@@ -86,6 +86,14 @@ class RecipientsRelationManager extends RelationManager
             }),
             TextColumn::make('status')
                 ->badge(),
+            TextColumn::make('sent_at')
+                ->dateTime('d.m.Y H:i')
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('failed_at')
+                ->dateTime('d.m.Y H:i')
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
         ];
 
         return $table
