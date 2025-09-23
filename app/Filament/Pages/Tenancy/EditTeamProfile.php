@@ -37,11 +37,11 @@ class EditTeamProfile extends EditTenantProfile
             Repeater::make("$baseKey.cc")->schema([
                 TextInput::make('address')->email()->required(),
                 TextInput::make('name'),
-            ])->columns(2),
+            ])->defaultItems(0)->columns(2),
             Repeater::make("$baseKey.bcc")->schema([
                 TextInput::make('address')->email()->required(),
                 TextInput::make('name'),
-            ])->columns(2),
+            ])->defaultItems(0)->columns(2),
         ];
     }
 
