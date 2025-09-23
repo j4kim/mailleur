@@ -19,8 +19,9 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
-use Filament\Notifications\Notification;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -31,6 +32,8 @@ use Livewire\Component;
 use Throwable;
 
 use function App\Tools\errorNotif;
+use function App\Tools\formatAddress;
+use function App\Tools\prose;
 use function App\Tools\successNotif;
 
 class RecipientsRelationManager extends RelationManager
@@ -132,6 +135,24 @@ class RecipientsRelationManager extends RelationManager
                     ]))
                     ->schema([RichEditor::make('mail_body')])
                     ->slideOver(),
+                Action::make('preview')
+                    ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Sent)
+                    ->schema([
+                        TextEntry::make('campaign.subject'),
+                        TextEntry::make('campaign.from')->state(
+                            formatAddress((array) $campaign->getFrom())
+                        ),
+                        Section::make()
+                            ->columnSpanFull()
+                            ->schema([
+                                TextEntry::make('mail_body')
+                                    ->state(fn(Recipient $r) => prose($r->mail_body))
+                                    ->hiddenLabel()
+                                    ->html()
+                            ]),
+                    ])
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(false),
                 ActionGroup::make([
                     EditAction::make()->label("Edit data"),
                     GenerateAction::make('regenerate')
