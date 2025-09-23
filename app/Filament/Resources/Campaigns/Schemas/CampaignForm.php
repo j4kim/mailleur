@@ -34,6 +34,7 @@ class CampaignForm
                 Section::make('Envelope')
                     ->columns(2)
                     ->schema(EditTeamProfile::getEnvelopeSchema("envelope"))
+                    ->hiddenOn('create')
                     ->columnSpanFull()
                     ->collapsed()
                     ->persistCollapsed(),
