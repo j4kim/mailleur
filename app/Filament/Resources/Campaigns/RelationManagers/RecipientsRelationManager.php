@@ -30,6 +30,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 use Throwable;
 
+use function App\Tools\errorNotif;
+use function App\Tools\successNotif;
+
 class RecipientsRelationManager extends RelationManager
 {
     protected static string $relationship = 'recipients';
@@ -102,10 +105,10 @@ class RecipientsRelationManager extends RelationManager
                     ])->action(function (array $data, Action $action, Component $livewire) use ($campaign) {
                         try {
                             $campaign->importCsv($data['csv_file']);
-                            $this->successNotif('Recipients imported successfully');
+                            successNotif('Recipients imported successfully');
                             return $livewire->redirect(request()->header('Referer'));
                         } catch (Throwable $e) {
-                            $this->errorNotif($e->getMessage());
+                            errorNotif($e->getMessage());
                             $action->cancel();
                         }
                     }),
@@ -175,23 +178,5 @@ class RecipientsRelationManager extends RelationManager
                         }),
                 ]),
             ]);
-    }
-
-    public function successNotif(string $message)
-    {
-        Notification::make()
-            ->title('Success')
-            ->body($message)
-            ->success()
-            ->send();
-    }
-
-    public function errorNotif(string $message)
-    {
-        Notification::make()
-            ->title('Error')
-            ->body($message)
-            ->status('danger')
-            ->send();
     }
 }

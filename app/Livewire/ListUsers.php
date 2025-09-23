@@ -11,7 +11,6 @@ use Filament\Actions\DetachAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Tables\Columns\TextColumn;
@@ -23,6 +22,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Throwable;
+
+use function App\Tools\errorNotif;
 
 class ListUsers extends Component implements HasActions, HasSchemas, HasTable
 {
@@ -58,11 +59,7 @@ class ListUsers extends Component implements HasActions, HasSchemas, HasTable
                         try {
                             $team->inviteUser($data);
                         } catch (Throwable $e) {
-                            Notification::make()
-                                ->title('Error')
-                                ->body($e->getMessage())
-                                ->status('danger')
-                                ->send();
+                            errorNotif($e->getMessage());
                         }
                     })->hidden(!$iAmAdmin),
             ])
