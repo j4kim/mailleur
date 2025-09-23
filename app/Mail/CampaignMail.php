@@ -35,14 +35,23 @@ class CampaignMail extends Mailable
         return Filament::getTenant();
     }
 
+    public function getAddress(string $key): ?Address
+    {
+        $addr = $this->campaign->envelope[$key];
+        if (!empty($addr['address'])) {
+            return new Address(...$addr);
+        }
+        return null;
+    }
+
     public function getFrom(): Address|string
     {
-        $from = $this->campaign->envelope['from'];
-        if (!empty($from['address'])) {
-            return new Address(...$from);
-        }
-        $team = $this->getTeam();
-        return $team->smtp_config['username'];
+        return $this->getAddress("from") ?? $this->getTeam()->smtp_config['username'];
+    }
+
+    public function getReplyTo(): ?Address
+    {
+        return $this->getAddress("replyTo");
     }
 
     /**
@@ -53,6 +62,7 @@ class CampaignMail extends Mailable
         return new Envelope(
             subject: $this->campaign->subject,
             from: $this->getFrom(),
+            replyTo: $this->getReplyTo(),
         );
     }
 
