@@ -98,7 +98,8 @@ class Recipient extends Model
     {
         $successCount = 0;
         $errorCount = 0;
-        foreach ($recipients as $recipient) {
+        $filtered = $recipients->where('status', '!==', RecipientStatus::Sent);
+        foreach ($filtered as $recipient) {
             try {
                 $recipient->send();
                 $successCount++;
