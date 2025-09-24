@@ -21,10 +21,8 @@ class Generate extends BulkAction
         parent::setUp();
 
         $this->label("Generate / Regenerate selected");
-
-        $this->color('primary');
-
         $this->icon(Heroicon::Bolt);
+        $this->color('primary');
 
         $this->requiresConfirmation();
 

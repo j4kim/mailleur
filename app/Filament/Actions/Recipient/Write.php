@@ -19,14 +19,10 @@ class Write extends EditAction
         parent::setUp();
 
         $this->label("Write");
-
-        $this->visible(fn(Recipient $r) => in_array($r->status, [
-            RecipientStatus::Customized,
-            RecipientStatus::Ready
-        ]));
-
-        $this->schema([RichEditor::make('mail_body')]);
-
         $this->slideOver();
+
+        $this->schema([
+            RichEditor::make('mail_body')
+        ]);
     }
 }

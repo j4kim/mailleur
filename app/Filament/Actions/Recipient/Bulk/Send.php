@@ -25,10 +25,8 @@ class Send extends BulkAction
         parent::setUp();
 
         $this->label("Send selected");
-
-        $this->color('primary');
-
         $this->icon(Heroicon::PaperAirplane);
+        $this->color('primary');
 
         $this->requiresConfirmation();
 

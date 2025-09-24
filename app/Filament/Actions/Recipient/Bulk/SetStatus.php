@@ -21,10 +21,8 @@ class SetStatus extends BulkAction
         parent::setUp();
 
         $this->label("Set status for selected");
-
-        $this->color('primary');
-
         $this->icon(Heroicon::Tag);
+        $this->color('primary');
 
         $this->schema([
             ToggleButtons::make('status')->options(RecipientStatus::class)

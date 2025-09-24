@@ -19,9 +19,12 @@ class Generate extends EditAction
     {
         parent::setUp();
 
-        $this->label("Generate");
-
+        $this->label(
+            fn(Recipient $recipient) =>
+            $recipient->status === RecipientStatus::Initial ? "Generate" : "Regenerate"
+        );
         $this->icon(Heroicon::Bolt);
+        $this->slideOver();
 
         $this->schema([
             RichEditor::make('mail_body')
@@ -36,7 +39,5 @@ class Generate extends EditAction
             $data['status'] = RecipientStatus::Customized;
             return $data;
         });
-
-        $this->slideOver();
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Actions\Recipient;
 
-use App\Enums\RecipientStatus;
 use App\Models\Recipient;
 use Exception;
 use Filament\Actions\Action;
@@ -22,6 +21,8 @@ class Send extends Action
     {
         parent::setUp();
 
+        $this->label("Send");
+        $this->color('primary');
         $this->icon(Heroicon::PaperAirplane);
 
         $this->action(function (Recipient $r) {
@@ -32,12 +33,5 @@ class Send extends Action
                 errorNotif($e->getMessage());
             }
         });
-
-        $this->visible(fn(Recipient $r) => in_array($r->status, [
-            RecipientStatus::Customized,
-            RecipientStatus::Ready
-        ]));
-
-        $this->color('success');
     }
 }

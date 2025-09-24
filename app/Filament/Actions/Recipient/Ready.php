@@ -19,11 +19,7 @@ class Ready extends Action
         parent::setUp();
 
         $this->label("Mark as Ready");
-
-        $this->visible(fn(Recipient $r) => $r->status === RecipientStatus::Customized);
-
         $this->color('primary');
-
         $this->icon(Heroicon::Check);
 
         $this->action(function (Recipient $r) {

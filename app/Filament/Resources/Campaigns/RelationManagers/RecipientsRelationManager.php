@@ -116,16 +116,13 @@ class RecipientsRelationManager extends RelationManager
                     }),
             ])
             ->recordActions([
-                Actions\Generate::make(),
-                Actions\Write::make(),
-                Actions\Preview::make(),
                 ActionGroup::make([
                     EditAction::make()->label("Edit data"),
-                    Actions\Generate::make('regenerate')
-                        ->label("Regenerate")
-                        ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Customized),
+                    Actions\Generate::make(),
+                    Actions\Write::make(),
                     Actions\Ready::make(),
                     Actions\SetStatus::make(),
+                    Actions\Preview::make(),
                     Actions\Send::make(),
                     DeleteAction::make(),
                 ]),

@@ -19,7 +19,6 @@ class SetStatus extends EditAction
         parent::setUp();
 
         $this->label("Set status");
-
         $this->icon(Heroicon::Tag);
 
         $this->schema([
