@@ -99,6 +99,7 @@ class Recipient extends Model
         $successCount = 0;
         $errorCount = 0;
         $filtered = $recipients->where('status', '!==', RecipientStatus::Sent);
+        self::configureSmtp();
         foreach ($filtered as $recipient) {
             try {
                 $recipient->send();
