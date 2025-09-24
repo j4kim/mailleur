@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Mail;
 
 class Recipient extends Model
 {
+
+    protected $touches = ['campaign'];
+
     protected function casts(): array
     {
         return [
