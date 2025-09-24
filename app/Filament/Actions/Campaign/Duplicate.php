@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Actions;
+namespace App\Filament\Actions\Campaign;
 
 use App\Enums\RecipientStatus;
 use App\Filament\Resources\Campaigns\CampaignResource;
@@ -14,11 +14,11 @@ use Livewire\Component;
 
 use function App\Tools\successNotif;
 
-class DuplicateCampaignAction extends Action
+class Duplicate extends Action
 {
     public static function getDefaultName(): ?string
     {
-        return 'duplicate';
+        return 'camapign-duplicate';
     }
 
     protected function setUp(): void

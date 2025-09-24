@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Actions;
+namespace App\Filament\Actions\Recipient;
 
 use App\Enums\RecipientStatus;
 use App\Models\Recipient;
@@ -8,15 +8,25 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\RichEditor;
 use Filament\Support\Icons\Heroicon;
 
-class GenerateAction extends EditAction
+class Generate extends EditAction
 {
+    use VisibleForStatus;
+
+    public static function getDefaultName(): ?string
+    {
+        return 'recipient-generate';
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->label("Generate");
-
+        $this->label(
+            fn(Recipient $recipient) =>
+            $recipient->status === RecipientStatus::Initial ? "Generate" : "Regenerate"
+        );
         $this->icon(Heroicon::Bolt);
+        $this->slideOver();
 
         $this->schema([
             RichEditor::make('mail_body')
@@ -31,7 +41,5 @@ class GenerateAction extends EditAction
             $data['status'] = RecipientStatus::Customized;
             return $data;
         });
-
-        $this->slideOver();
     }
 }

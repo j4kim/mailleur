@@ -2,41 +2,19 @@
 
 namespace App\Filament\Resources\Campaigns\RelationManagers;
 
-use App\Enums\RecipientStatus;
-use App\Filament\Actions\GenerateAction;
+use App\Enums\RecipientStatus as RS;
+use App\Filament\Actions\Campaign\ImportRecipients;
+use App\Filament\Actions\Recipient as Actions;
 use App\Models\Campaign;
-use App\Models\Recipient;
-use Exception;
-use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ToggleButtons;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Collection;
-use Livewire\Component;
-use Throwable;
-
-use function App\Tools\errorNotif;
-use function App\Tools\formatAddress;
-use function App\Tools\notif;
-use function App\Tools\prose;
-use function App\Tools\successNotif;
 
 class RecipientsRelationManager extends RelationManager
 {
@@ -45,23 +23,6 @@ class RecipientsRelationManager extends RelationManager
     public function isReadOnly(): bool
     {
         return false;
-    }
-
-    public function form(Schema $schema): Schema
-    {
-        /** @var Campaign $campaign */
-        $campaign = $this->getOwnerRecord();
-
-        return $schema
-            ->components([
-                TextInput::make('email')
-                    ->label('Email address')
-                    ->email()
-                    ->required(),
-                ...collect($campaign->columns)->map(function (string $name) {
-                    return Textarea::make("data.$name")->label($name)->rows(1);
-                }),
-            ]);
     }
 
     public function table(Table $table): Table
@@ -105,137 +66,34 @@ class RecipientsRelationManager extends RelationManager
             ->recordTitleAttribute('email')
             ->columns($columns)
             ->filters([
-                SelectFilter::make('status')->options(RecipientStatus::class)
+                SelectFilter::make('status')->options(RS::class)
             ])
             ->headerActions([
                 CreateAction::make()->outlined(),
-                Action::make('import recipients')
-                    ->schema([
-                        FileUpload::make('csv_file')
-                            ->label("CSV file")
-                            ->required()
-                            ->acceptedFileTypes(['text/csv']),
-                    ])->action(function (array $data, Action $action, Component $livewire) use ($campaign) {
-                        try {
-                            $campaign->importCsv($data['csv_file']);
-                            successNotif('Recipients imported successfully');
-                            return $livewire->redirect(request()->header('Referer'));
-                        } catch (Throwable $e) {
-                            errorNotif($e->getMessage());
-                            $action->cancel();
-                        }
-                    }),
+                ImportRecipients::make()->init($campaign),
             ])
             ->recordActions([
-                GenerateAction::make('generate')
-                    ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Initial),
-                EditAction::make('write')
-                    ->label("Write")
-                    ->visible(fn(Recipient $r) => in_array($r->status, [
-                        RecipientStatus::Customized,
-                        RecipientStatus::Ready
-                    ]))
-                    ->schema([RichEditor::make('mail_body')])
-                    ->slideOver(),
-                Action::make('preview')
-                    ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Sent)
-                    ->schema([
-                        TextEntry::make('campaign.subject'),
-                        TextEntry::make('campaign.from')->state(
-                            formatAddress((array) $campaign->getFrom())
-                        ),
-                        Section::make()
-                            ->columnSpanFull()
-                            ->schema([
-                                TextEntry::make('mail_body')
-                                    ->state(fn(Recipient $r) => prose($r->mail_body))
-                                    ->hiddenLabel()
-                                    ->html()
-                            ]),
-                    ])
-                    ->modalSubmitAction(false)
-                    ->modalCancelAction(false),
+                Actions\Generate::make('generate')->for(RS::Initial),
+                Actions\Ready::make('ready')->for(RS::Customized),
+                Actions\Send::make('send')->for(RS::Ready),
+                Actions\Preview::make('preview')->for(RS::Sent),
                 ActionGroup::make([
-                    EditAction::make()->label("Edit data"),
-                    GenerateAction::make('regenerate')
-                        ->label("Regenerate")
-                        ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Customized),
-                    Action::make('ready')
-                        ->label("Mark as Ready")
-                        ->visible(fn(Recipient $r) => $r->status === RecipientStatus::Customized)
-                        ->color('primary')
-                        ->icon(Heroicon::Check)
-                        ->action(function (Recipient $r) {
-                            $r->status = RecipientStatus::Ready;
-                            $r->save();
-                        }),
-                    EditAction::make('status')
-                        ->label("Set status")
-                        ->icon(Heroicon::Tag)
-                        ->schema([
-                            ToggleButtons::make('status')->options(RecipientStatus::class)
-                        ]),
-                    Action::make('primary')
-                        ->icon(Heroicon::PaperAirplane)
-                        ->action(function (Recipient $r) {
-                            try {
-                                $r->sendOne();
-                                successNotif("Mail sent to $r->email");
-                            } catch (Exception $e) {
-                                errorNotif($e->getMessage());
-                            }
-                        })
-                        ->visible(fn(Recipient $r) => in_array($r->status, [
-                            RecipientStatus::Customized,
-                            RecipientStatus::Ready
-                        ]))
-                        ->color('success'),
+                    Actions\EditData::make()->for(RS::Initial, RS::Customized, RS::Failed),
+                    Actions\SetStatus::make(),
+                    Actions\Generate::make()->for(RS::Customized, RS::Failed),
+                    Actions\Ready::make()->for(RS::Failed),
+                    Actions\Write::make()->for(RS::Customized, RS::Failed),
+                    Actions\Send::make()->for(RS::Failed),
+                    Actions\Preview::make()->for(RS::Customized, RS::Ready, RS::Failed),
                     DeleteAction::make(),
                 ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    BulkAction::make('generate')
-                        ->label("Generate / Regenerate selected")
-                        ->color('primary')
-                        ->icon(Heroicon::Bolt)
-                        ->requiresConfirmation()
-                        ->action(function (Collection $records) {
-                            $records->each(fn(Recipient $r) => $r->generateAndSave());
-                        }),
-                    BulkAction::make('status')
-                        ->label("Set status for selected")
-                        ->color('primary')
-                        ->icon(Heroicon::Tag)
-                        ->schema([
-                            ToggleButtons::make('status')->options(RecipientStatus::class)
-                        ])
-                        ->action(function (Collection $records, array $data) {
-                            $records->each(fn(Recipient $r) => $r->update($data));
-                        }),
-                    BulkAction::make('send')
-                        ->label("Send selected")
-                        ->color('primary')
-                        ->icon(Heroicon::PaperAirplane)
-                        ->requiresConfirmation()
-                        ->modalDescription(
-                            "This will\nbuild mail body for recipients with status \"Initial\",
-                            and send mail for all recipients with status other than \"Sent\".
-                            Are you sure you would like to do this?"
-                        )
-                        ->action(function (Collection $records, array $data) {
-                            [$successCount, $errorCount] = Recipient::sendMany($records);
-                            if ($successCount) {
-                                successNotif("Mail sent to " . str("recipient")->plural($successCount, true));
-                            }
-                            if ($errorCount) {
-                                errorNotif("Sending failed for " . str("recipient")->plural($errorCount, true));
-                            }
-                            if ($successCount + $errorCount === 0) {
-                                notif(null, "No mails sent")->warning()->send();
-                            }
-                        }),
+                    Actions\Bulk\Generate::make(),
+                    Actions\Bulk\SetStatus::make(),
+                    Actions\Bulk\Send::make(),
                 ]),
             ]);
     }
