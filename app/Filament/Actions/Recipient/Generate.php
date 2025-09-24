@@ -10,6 +10,8 @@ use Filament\Support\Icons\Heroicon;
 
 class Generate extends EditAction
 {
+    use VisibleForStatus;
+
     public static function getDefaultName(): ?string
     {
         return 'recipient-generate';

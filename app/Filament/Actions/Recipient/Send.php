@@ -12,6 +12,8 @@ use function App\Tools\successNotif;
 
 class Send extends Action
 {
+    use VisibleForStatus;
+
     public static function getDefaultName(): ?string
     {
         return 'recipient-send';

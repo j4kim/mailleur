@@ -9,6 +9,8 @@ use Filament\Support\Icons\Heroicon;
 
 class Ready extends Action
 {
+    use VisibleForStatus;
+
     public static function getDefaultName(): ?string
     {
         return 'recipient-ready';

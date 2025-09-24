@@ -13,10 +13,13 @@ use function App\Tools\prose;
 
 class Preview extends Action
 {
+    use VisibleForStatus;
+
     public static function getDefaultName(): ?string
     {
         return 'recipient-preview';
     }
+
     protected function setUp(): void
     {
         parent::setUp();

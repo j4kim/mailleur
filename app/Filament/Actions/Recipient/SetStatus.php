@@ -9,6 +9,8 @@ use Filament\Support\Icons\Heroicon;
 
 class SetStatus extends EditAction
 {
+    use VisibleForStatus;
+
     public static function getDefaultName(): ?string
     {
         return 'recipient-set-status';
