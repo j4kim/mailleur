@@ -174,7 +174,7 @@ class RecipientsRelationManager extends RelationManager
                         ->schema([
                             ToggleButtons::make('status')->options(RecipientStatus::class)
                         ]),
-                    Action::make('send')
+                    Action::make('primary')
                         ->icon(Heroicon::PaperAirplane)
                         ->action(function (Recipient $r) {
                             try {
@@ -215,8 +215,14 @@ class RecipientsRelationManager extends RelationManager
                         }),
                     BulkAction::make('send')
                         ->label("Send selected")
-                        ->color('success')
+                        ->color('primary')
                         ->icon(Heroicon::PaperAirplane)
+                        ->requiresConfirmation()
+                        ->modalDescription(
+                            "This will\nbuild mail body for recipients with status \"Initial\",
+                            and send mail for all recipients with status other than \"Sent\".
+                            Are you sure you would like to do this?"
+                        )
                         ->action(function (Collection $records, array $data) {
                             [$successCount, $errorCount] = Recipient::sendMany($records);
                             if ($successCount) {
