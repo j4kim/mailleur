@@ -35,7 +35,7 @@ function errorNotif(string $message, string $title = "Error"): Notification
     return notif($message, $title)->danger()->send();
 }
 
-function prose(string $html)
+function prose(?string $html)
 {
     return "<div class=\"prose dark:prose-invert\">$html</div>";
 }
