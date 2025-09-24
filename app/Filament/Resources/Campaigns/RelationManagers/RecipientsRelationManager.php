@@ -94,14 +94,18 @@ class RecipientsRelationManager extends RelationManager
                 ImportRecipients::make()->init($campaign),
             ])
             ->recordActions([
+                Actions\Generate::make(),
+                Actions\Ready::make(),
+                Actions\Send::make(),
+                Actions\Preview::make(),
                 ActionGroup::make([
                     EditAction::make()->label("Edit data"),
-                    Actions\Generate::make(),
-                    Actions\Write::make(),
-                    Actions\Ready::make(),
                     Actions\SetStatus::make(),
-                    Actions\Preview::make(),
+                    Actions\Generate::make(),
+                    Actions\Ready::make(),
+                    Actions\Write::make(),
                     Actions\Send::make(),
+                    Actions\Preview::make(),
                     DeleteAction::make(),
                 ]),
             ])
