@@ -3,8 +3,15 @@
 namespace App\Filament\Resources\Campaigns\RelationManagers;
 
 use App\Enums\RecipientStatus;
+use App\Filament\Actions\Bulk\GenerateRecipientsBulkAction;
+use App\Filament\Actions\Bulk\SendRecipientsBulkAction;
+use App\Filament\Actions\Bulk\SetStatusRecipientsBulkAction;
 use App\Filament\Actions\GenerateAction;
 use App\Filament\Actions\PreviewRecipientAction;
+use App\Filament\Actions\ReadyRecipientAction;
+use App\Filament\Actions\SendRecipientAction;
+use App\Filament\Actions\SetStatusRecipientAction;
+use App\Filament\Actions\WriteRecipientAction;
 use App\Models\Campaign;
 use App\Models\Recipient;
 use Exception;
@@ -130,96 +137,25 @@ class RecipientsRelationManager extends RelationManager
             ->recordActions([
                 GenerateAction::make('generate')
                     ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Initial),
-                EditAction::make('write')
-                    ->label("Write")
-                    ->visible(fn(Recipient $r) => in_array($r->status, [
-                        RecipientStatus::Customized,
-                        RecipientStatus::Ready
-                    ]))
-                    ->schema([RichEditor::make('mail_body')])
-                    ->slideOver(),
+                WriteRecipientAction::make('write'),
                 PreviewRecipientAction::make('preview'),
                 ActionGroup::make([
                     EditAction::make()->label("Edit data"),
                     GenerateAction::make('regenerate')
                         ->label("Regenerate")
                         ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Customized),
-                    Action::make('ready')
-                        ->label("Mark as Ready")
-                        ->visible(fn(Recipient $r) => $r->status === RecipientStatus::Customized)
-                        ->color('primary')
-                        ->icon(Heroicon::Check)
-                        ->action(function (Recipient $r) {
-                            $r->status = RecipientStatus::Ready;
-                            $r->save();
-                        }),
-                    EditAction::make('status')
-                        ->label("Set status")
-                        ->icon(Heroicon::Tag)
-                        ->schema([
-                            ToggleButtons::make('status')->options(RecipientStatus::class)
-                        ]),
-                    Action::make('primary')
-                        ->icon(Heroicon::PaperAirplane)
-                        ->action(function (Recipient $r) {
-                            try {
-                                $r->sendOne();
-                                successNotif("Mail sent to $r->email");
-                            } catch (Exception $e) {
-                                errorNotif($e->getMessage());
-                            }
-                        })
-                        ->visible(fn(Recipient $r) => in_array($r->status, [
-                            RecipientStatus::Customized,
-                            RecipientStatus::Ready
-                        ]))
-                        ->color('success'),
+                    ReadyRecipientAction::make('ready'),
+                    SetStatusRecipientAction::make('status'),
+                    SendRecipientAction::make('send'),
                     DeleteAction::make(),
                 ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    BulkAction::make('generate')
-                        ->label("Generate / Regenerate selected")
-                        ->color('primary')
-                        ->icon(Heroicon::Bolt)
-                        ->requiresConfirmation()
-                        ->action(function (Collection $records) {
-                            $records->each(fn(Recipient $r) => $r->generateAndSave());
-                        }),
-                    BulkAction::make('status')
-                        ->label("Set status for selected")
-                        ->color('primary')
-                        ->icon(Heroicon::Tag)
-                        ->schema([
-                            ToggleButtons::make('status')->options(RecipientStatus::class)
-                        ])
-                        ->action(function (Collection $records, array $data) {
-                            $records->each(fn(Recipient $r) => $r->update($data));
-                        }),
-                    BulkAction::make('send')
-                        ->label("Send selected")
-                        ->color('primary')
-                        ->icon(Heroicon::PaperAirplane)
-                        ->requiresConfirmation()
-                        ->modalDescription(
-                            "This will\nbuild mail body for recipients with status \"Initial\",
-                            and send mail for all recipients with status other than \"Sent\".
-                            Are you sure you would like to do this?"
-                        )
-                        ->action(function (Collection $records, array $data) {
-                            [$successCount, $errorCount] = Recipient::sendMany($records);
-                            if ($successCount) {
-                                successNotif("Mail sent to " . str("recipient")->plural($successCount, true));
-                            }
-                            if ($errorCount) {
-                                errorNotif("Sending failed for " . str("recipient")->plural($errorCount, true));
-                            }
-                            if ($successCount + $errorCount === 0) {
-                                notif(null, "No mails sent")->warning()->send();
-                            }
-                        }),
+                    GenerateRecipientsBulkAction::make('generate'),
+                    SetStatusRecipientsBulkAction::make('status'),
+                    SendRecipientsBulkAction::make('send'),
                 ]),
             ]);
     }
