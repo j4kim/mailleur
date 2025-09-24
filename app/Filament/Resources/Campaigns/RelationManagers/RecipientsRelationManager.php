@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Campaigns\RelationManagers;
 
-use App\Enums\RecipientStatus;
+use App\Enums\RecipientStatus as RS;
 use App\Filament\Actions\Campaign\ImportRecipients;
 use App\Filament\Actions\Recipient as Actions;
 use App\Models\Campaign;
@@ -66,25 +66,25 @@ class RecipientsRelationManager extends RelationManager
             ->recordTitleAttribute('email')
             ->columns($columns)
             ->filters([
-                SelectFilter::make('status')->options(RecipientStatus::class)
+                SelectFilter::make('status')->options(RS::class)
             ])
             ->headerActions([
                 CreateAction::make()->outlined(),
                 ImportRecipients::make()->init($campaign),
             ])
             ->recordActions([
-                Actions\Generate::make()->for(RecipientStatus::Initial),
-                Actions\Ready::make()->for(RecipientStatus::Customized),
-                Actions\Send::make()->for(RecipientStatus::Ready),
-                Actions\Preview::make()->for(RecipientStatus::Sent),
+                Actions\Generate::make('generate')->for(RS::Initial),
+                Actions\Ready::make('ready')->for(RS::Customized),
+                Actions\Send::make('send')->for(RS::Ready),
+                Actions\Preview::make('preview')->for(RS::Sent),
                 ActionGroup::make([
-                    Actions\EditData::make(),
+                    Actions\EditData::make()->for(RS::Initial, RS::Customized, RS::Failed),
                     Actions\SetStatus::make(),
-                    Actions\Generate::make(),
-                    Actions\Ready::make(),
-                    Actions\Write::make(),
-                    Actions\Send::make(),
-                    Actions\Preview::make(),
+                    Actions\Generate::make()->for(RS::Customized, RS::Failed),
+                    Actions\Ready::make()->for(RS::Failed),
+                    Actions\Write::make()->for(RS::Customized, RS::Failed),
+                    Actions\Send::make()->for(RS::Failed),
+                    Actions\Preview::make()->for(RS::Customized, RS::Ready, RS::Failed),
                     DeleteAction::make(),
                 ]),
             ])
