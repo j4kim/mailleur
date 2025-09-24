@@ -11,11 +11,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -27,23 +23,6 @@ class RecipientsRelationManager extends RelationManager
     public function isReadOnly(): bool
     {
         return false;
-    }
-
-    public function form(Schema $schema): Schema
-    {
-        /** @var Campaign $campaign */
-        $campaign = $this->getOwnerRecord();
-
-        return $schema
-            ->components([
-                TextInput::make('email')
-                    ->label('Email address')
-                    ->email()
-                    ->required(),
-                ...collect($campaign->columns)->map(function (string $name) {
-                    return Textarea::make("data.$name")->label($name)->rows(1);
-                }),
-            ]);
     }
 
     public function table(Table $table): Table
@@ -99,7 +78,7 @@ class RecipientsRelationManager extends RelationManager
                 Actions\Send::make()->for(RecipientStatus::Ready),
                 Actions\Preview::make()->for(RecipientStatus::Sent),
                 ActionGroup::make([
-                    EditAction::make()->label("Edit data"),
+                    Actions\EditData::make(),
                     Actions\SetStatus::make(),
                     Actions\Generate::make(),
                     Actions\Ready::make(),
