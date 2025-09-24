@@ -2,6 +2,7 @@
 
 namespace App\Tools;
 
+use Closure;
 use Filament\Notifications\Notification;
 
 function emailToName(string $email): string
@@ -19,7 +20,7 @@ function formatAddress(?array $addr): string
     return "$addr[name] <$addr[address]>";
 }
 
-function notif(string $message, string $title): Notification
+function notif(string|Closure|null $message, string|Closure|null $title): Notification
 {
     return Notification::make()->title($title)->body($message);
 }

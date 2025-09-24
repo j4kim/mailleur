@@ -34,6 +34,7 @@ use Throwable;
 
 use function App\Tools\errorNotif;
 use function App\Tools\formatAddress;
+use function App\Tools\notif;
 use function App\Tools\prose;
 use function App\Tools\successNotif;
 
@@ -230,6 +231,9 @@ class RecipientsRelationManager extends RelationManager
                             }
                             if ($errorCount) {
                                 errorNotif("Sending failed for " . str("recipient")->plural($errorCount, true));
+                            }
+                            if ($successCount + $errorCount === 0) {
+                                notif(null, "No mails sent")->warning()->send();
                             }
                         }),
                 ]),
