@@ -69,7 +69,9 @@ class RecipientsRelationManager extends RelationManager
                 SelectFilter::make('status')->options(RS::class)
             ])
             ->headerActions([
-                CreateAction::make()->outlined(),
+                CreateAction::make()
+                    ->outlined()
+                    ->schema(Actions\EditData::getCustomSchema($campaign)),
                 ImportRecipients::make()->init($campaign),
             ])
             ->recordActions([
