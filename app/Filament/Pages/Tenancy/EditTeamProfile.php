@@ -72,9 +72,14 @@ class EditTeamProfile extends EditTenantProfile
                     ->persistCollapsed()
                     ->hidden(!$iAmAdmin),
 
-                Section::make('Envelope defaults')
-                    ->columns(2)
-                    ->schema(self::getEnvelopeSchema("defaults"))
+                Section::make('Defaults')
+                    ->schema([
+                        Section::make('Envelope')
+                            ->columns(2)
+                            ->schema(self::getEnvelopeSchema("defaults.envelope"))
+                            ->secondary()
+                            ->compact()
+                    ])
                     ->collapsed()
                     ->persistCollapsed(),
 
