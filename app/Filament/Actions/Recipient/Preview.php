@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Actions;
+namespace App\Filament\Actions\Recipient;
 
 use App\Enums\RecipientStatus;
 use App\Models\Recipient;
@@ -11,8 +11,12 @@ use Filament\Schemas\Components\Section;
 use function App\Tools\formatAddress;
 use function App\Tools\prose;
 
-class PreviewRecipientAction extends Action
+class Preview extends Action
 {
+    public static function getDefaultName(): ?string
+    {
+        return 'recipient-preview';
+    }
     protected function setUp(): void
     {
         parent::setUp();

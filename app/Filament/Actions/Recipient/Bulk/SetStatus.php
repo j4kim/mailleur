@@ -1,15 +1,21 @@
 <?php
 
-namespace App\Filament\Actions\Bulk;
+namespace App\Filament\Actions\Recipient\Bulk;
 
 use App\Enums\RecipientStatus;
 use Filament\Actions\BulkAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Collection;
 
-class SetStatusRecipientsBulkAction extends BulkAction
+class SetStatus extends BulkAction
 {
+    public static function getDefaultName(): ?string
+    {
+        return 'recipient-bulk-set-status';
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

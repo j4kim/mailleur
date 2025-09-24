@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Actions;
+namespace App\Filament\Actions\Recipient;
 
 use App\Enums\RecipientStatus;
 use App\Models\Recipient;
@@ -8,8 +8,13 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\RichEditor;
 use Filament\Support\Icons\Heroicon;
 
-class GenerateAction extends EditAction
+class Generate extends EditAction
 {
+    public static function getDefaultName(): ?string
+    {
+        return 'recipient-generate';
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

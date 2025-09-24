@@ -1,14 +1,19 @@
 <?php
 
-namespace App\Filament\Actions;
+namespace App\Filament\Actions\Recipient;
 
 use App\Enums\RecipientStatus;
 use App\Models\Recipient;
 use Filament\Actions\Action;
 use Filament\Support\Icons\Heroicon;
 
-class ReadyRecipientAction extends Action
+class Ready extends Action
 {
+    public static function getDefaultName(): ?string
+    {
+        return 'recipient-ready';
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

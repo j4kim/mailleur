@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Actions;
+namespace App\Filament\Actions\Recipient;
 
 use App\Enums\RecipientStatus;
 use App\Models\Recipient;
@@ -11,8 +11,13 @@ use Filament\Support\Icons\Heroicon;
 use function App\Tools\errorNotif;
 use function App\Tools\successNotif;
 
-class SendRecipientAction extends Action
+class Send extends Action
 {
+    public static function getDefaultName(): ?string
+    {
+        return 'recipient-send';
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

@@ -1,14 +1,19 @@
 <?php
 
-namespace App\Filament\Actions;
+namespace App\Filament\Actions\Recipient;
 
 use App\Enums\RecipientStatus;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Support\Icons\Heroicon;
 
-class SetStatusRecipientAction extends EditAction
+class SetStatus extends EditAction
 {
+    public static function getDefaultName(): ?string
+    {
+        return 'recipient-set-status';
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Campaigns\Pages;
 
-use App\Filament\Actions\DuplicateCampaignAction;
+use App\Filament\Actions\Campaign\Duplicate;
 use App\Filament\Resources\Campaigns\CampaignResource;
 use App\Filament\Resources\Campaigns\RelationManagers\RecipientsRelationManager;
 use Filament\Actions\ActionGroup;
@@ -18,7 +18,7 @@ class ViewCampaign extends ViewRecord
         return [
             EditAction::make(),
             ActionGroup::make([
-                DuplicateCampaignAction::make(),
+                Duplicate::make(),
             ]),
         ];
     }

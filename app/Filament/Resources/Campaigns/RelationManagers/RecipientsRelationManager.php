@@ -3,47 +3,28 @@
 namespace App\Filament\Resources\Campaigns\RelationManagers;
 
 use App\Enums\RecipientStatus;
-use App\Filament\Actions\Bulk\GenerateRecipientsBulkAction;
-use App\Filament\Actions\Bulk\SendRecipientsBulkAction;
-use App\Filament\Actions\Bulk\SetStatusRecipientsBulkAction;
-use App\Filament\Actions\GenerateAction;
-use App\Filament\Actions\PreviewRecipientAction;
-use App\Filament\Actions\ReadyRecipientAction;
-use App\Filament\Actions\SendRecipientAction;
-use App\Filament\Actions\SetStatusRecipientAction;
-use App\Filament\Actions\WriteRecipientAction;
+use App\Filament\Actions\Recipient as Actions;
 use App\Models\Campaign;
 use App\Models\Recipient;
-use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ToggleButtons;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 use Throwable;
 
 use function App\Tools\errorNotif;
-use function App\Tools\formatAddress;
-use function App\Tools\notif;
-use function App\Tools\prose;
 use function App\Tools\successNotif;
 
 class RecipientsRelationManager extends RelationManager
@@ -135,27 +116,26 @@ class RecipientsRelationManager extends RelationManager
                     }),
             ])
             ->recordActions([
-                GenerateAction::make('generate')
-                    ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Initial),
-                WriteRecipientAction::make('write'),
-                PreviewRecipientAction::make('preview'),
+                Actions\Generate::make(),
+                Actions\Write::make(),
+                Actions\Preview::make(),
                 ActionGroup::make([
                     EditAction::make()->label("Edit data"),
-                    GenerateAction::make('regenerate')
+                    Actions\Generate::make('regenerate')
                         ->label("Regenerate")
                         ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Customized),
-                    ReadyRecipientAction::make('ready'),
-                    SetStatusRecipientAction::make('status'),
-                    SendRecipientAction::make('send'),
+                    Actions\Ready::make(),
+                    Actions\SetStatus::make(),
+                    Actions\Send::make(),
                     DeleteAction::make(),
                 ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    GenerateRecipientsBulkAction::make('generate'),
-                    SetStatusRecipientsBulkAction::make('status'),
-                    SendRecipientsBulkAction::make('send'),
+                    Actions\Bulk\Generate::make(),
+                    Actions\Bulk\SetStatus::make(),
+                    Actions\Bulk\Send::make(),
                 ]),
             ]);
     }
