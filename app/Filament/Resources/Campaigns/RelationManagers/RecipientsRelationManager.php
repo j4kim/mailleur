@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Campaigns\RelationManagers;
 
 use App\Enums\RecipientStatus;
 use App\Filament\Actions\GenerateAction;
+use App\Filament\Actions\PreviewRecipientAction;
 use App\Models\Campaign;
 use App\Models\Recipient;
 use Exception;
@@ -137,24 +138,7 @@ class RecipientsRelationManager extends RelationManager
                     ]))
                     ->schema([RichEditor::make('mail_body')])
                     ->slideOver(),
-                Action::make('preview')
-                    ->visible(fn(Recipient $r) => $r->status == RecipientStatus::Sent)
-                    ->schema([
-                        TextEntry::make('campaign.subject'),
-                        TextEntry::make('campaign.from')->state(
-                            formatAddress((array) $campaign->getFrom())
-                        ),
-                        Section::make()
-                            ->columnSpanFull()
-                            ->schema([
-                                TextEntry::make('mail_body')
-                                    ->state(fn(Recipient $r) => prose($r->mail_body))
-                                    ->hiddenLabel()
-                                    ->html()
-                            ]),
-                    ])
-                    ->modalSubmitAction(false)
-                    ->modalCancelAction(false),
+                PreviewRecipientAction::make('preview'),
                 ActionGroup::make([
                     EditAction::make()->label("Edit data"),
                     GenerateAction::make('regenerate')
