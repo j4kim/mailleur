@@ -70,7 +70,7 @@ class Recipient extends Model
     public function send()
     {
         if (!$this->mail_body) {
-            throw new Exception("No mail body for recipient $this->email");
+            $this->mail_body = $this->generateMailBody();
         }
         try {
             Mail::to($this->email)->send(new CampaignMail($this));
@@ -87,6 +87,9 @@ class Recipient extends Model
 
     public function sendOne()
     {
+        if (!$this->mail_body) {
+            throw new Exception("No mail body for recipient $this->email");
+        }
         self::configureSmtp();
         $this->send();
     }
