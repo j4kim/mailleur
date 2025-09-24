@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('campaigns', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('team_id')->constrained()->nullOnDelete();
+            $table->foreignId('team_id')->nullable()->constrained()->nullOnDelete();
             $table->string('subject');
             $table->json('template')->nullable();
             $table->json('columns')->nullable();
