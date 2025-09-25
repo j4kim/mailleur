@@ -20,7 +20,8 @@ class Campaign extends Model
     protected static function booted(): void
     {
         static::creating(function (Campaign $campaign) {
-            $campaign->envelope = $campaign->team->defaults;
+            $campaign->template = @$campaign->team->defaults['template'];
+            $campaign->envelope = @$campaign->team->defaults['envelope'];
         });
     }
 
