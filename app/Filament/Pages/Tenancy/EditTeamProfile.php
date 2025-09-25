@@ -4,6 +4,7 @@ namespace App\Filament\Pages\Tenancy;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Tenancy\EditTenantProfile;
 use Filament\Schemas\Components\Section;
@@ -73,11 +74,18 @@ class EditTeamProfile extends EditTenantProfile
                     ->hidden(!$iAmAdmin),
 
                 Section::make('Defaults')
+                    ->description("Here you can set defaults that are copied to new campaigns")
                     ->schema([
+                        RichEditor::make('defaults.template')
+                            ->label("Template")
+                            ->belowLabel("This is a good place to prepare a signature")
+                            ->hiddenOn('create')
+                            ->json()
+                            ->columnSpanFull(),
+
                         Section::make('Envelope')
                             ->columns(2)
                             ->schema(self::getEnvelopeSchema("defaults.envelope"))
-                            ->secondary()
                             ->compact()
                     ])
                     ->collapsed()
