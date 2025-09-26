@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\RecipientStatus;
+use App\Filament\Forms\Components\RichEditor\RichContentCustomBlocks\CampaignLink;
 use App\Mail\CampaignMail;
 use Exception;
 use Filament\Facades\Filament;
@@ -49,6 +50,12 @@ class Recipient extends Model
         $template = $this->campaign->template;
         if (!$template) return null;
         return RichContentRenderer::make($template)
+            ->customBlocks([
+                CampaignLink::class => [
+                    'campaign' => $this->campaign,
+                    'recipient' => $this,
+                ],
+            ])
             ->mergeTags($this->getMergeTags())
             ->toHtml();
     }

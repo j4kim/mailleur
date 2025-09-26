@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filament\Forms\Components\RichEditor\RichContentCustomBlocks\CampaignLink;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -95,6 +96,11 @@ class Campaign extends Model
             ->mapWithKeys(fn($c) => [$c => "{{ $c }}"])
             ->toArray();
         $rendered = RichContentRenderer::make($this->template)
+            ->customBlocks([
+                CampaignLink::class => [
+                    'campaign' => $this
+                ]
+            ])
             ->mergeTags($mergeTags)
             ->toHtml();
         return prose($rendered);
