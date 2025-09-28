@@ -15,6 +15,9 @@ class CampaignsTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
