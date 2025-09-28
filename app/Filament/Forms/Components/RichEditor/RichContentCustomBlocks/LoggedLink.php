@@ -6,16 +6,16 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\RichEditor\RichContentCustomBlock;
 use Filament\Forms\Components\TextInput;
 
-class CampaignLink extends RichContentCustomBlock
+class LoggedLink extends RichContentCustomBlock
 {
     public static function getId(): string
     {
-        return 'campaign-link';
+        return 'logged-link';
     }
 
     public static function getLabel(): string
     {
-        return 'Link';
+        return 'Logged link';
     }
 
     public static function configureEditorAction(Action $action): Action
@@ -30,7 +30,7 @@ class CampaignLink extends RichContentCustomBlock
     public static function toPreviewHtml(array $config): string
     {
         return view(
-            'filament.forms.components.rich-editor.rich-content-custom-blocks.campaign-link.preview',
+            'filament.custom-blocks.logged-link-preview',
             $config
         )->render();
     }
@@ -38,7 +38,7 @@ class CampaignLink extends RichContentCustomBlock
     public static function toHtml(array $config, array $data): string
     {
         return view(
-            'filament.forms.components.rich-editor.rich-content-custom-blocks.campaign-link.index',
+            'filament.custom-blocks.logged-link',
             compact('config', 'data')
         )->render();
     }

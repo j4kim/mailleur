@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Campaigns\Schemas;
 
-use App\Filament\Forms\Components\RichEditor\RichContentCustomBlocks\CampaignLink;
+use App\Filament\Forms\Components\RichEditor\RichContentCustomBlocks\LoggedLink;
 use App\Filament\Pages\Tenancy\EditTeamProfile;
 use App\Models\Campaign;
 use Filament\Forms\Components\TextInput;
@@ -22,7 +22,7 @@ class CampaignForm
                 RichEditor::make('template')
                     ->hiddenOn('create')
                     ->customBlocks([
-                        CampaignLink::class,
+                        LoggedLink::class,
                     ])
                     ->mergeTags(function (Campaign $campaign) {
                         return $campaign->getMergeTags();

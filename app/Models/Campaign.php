@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Filament\Forms\Components\RichEditor\RichContentCustomBlocks\CampaignLink;
+use App\Filament\Forms\Components\RichEditor\RichContentCustomBlocks\LoggedLink;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -97,7 +97,7 @@ class Campaign extends Model
             ->toArray();
         $rendered = RichContentRenderer::make($this->template)
             ->customBlocks([
-                CampaignLink::class => [
+                LoggedLink::class => [
                     'campaign' => $this
                 ]
             ])

@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enums\RecipientStatus;
-use App\Filament\Forms\Components\RichEditor\RichContentCustomBlocks\CampaignLink;
+use App\Filament\Forms\Components\RichEditor\RichContentCustomBlocks\LoggedLink;
 use App\Mail\CampaignMail;
 use Exception;
 use Filament\Facades\Filament;
@@ -51,7 +51,7 @@ class Recipient extends Model
         if (!$template) return null;
         return RichContentRenderer::make($template)
             ->customBlocks([
-                CampaignLink::class => [
+                LoggedLink::class => [
                     'campaign' => $this->campaign,
                     'recipient' => $this,
                 ],
