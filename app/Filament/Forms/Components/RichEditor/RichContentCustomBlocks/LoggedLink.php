@@ -29,10 +29,7 @@ class LoggedLink extends RichContentCustomBlock
 
     public static function toPreviewHtml(array $config): string
     {
-        return view(
-            'filament.custom-blocks.logged-link-preview',
-            $config
-        )->render();
+        return self::toHtml($config, []);
     }
 
     public static function toHtml(array $config, array $data): string
