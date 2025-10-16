@@ -19,17 +19,18 @@ class Vcf
     public function split(): Collection
     {
         return $this->items = str($this->vcf)
-            ->split('/\r?\n\r?\n/')
-            ->map(fn(string $block) => self::blockToArray($block));
+            ->split('/\r?\n\r?\n(?=B)/')
+            ->map(fn(string $block, $index) => self::blockToArray($block, $index));
     }
 
-    public static function blockToArray(string $block)
+    public static function blockToArray(string $block): Collection
     {
         return str($block)->split('/\r?\n/')
+            ->filter(fn(string $line) => !empty($line))
             ->mapWithKeys(function (string $line) {
-                $parts = explode(':', $line);
-                if (count($parts) < 2) return [];
-                return [$parts[0] => $parts[1]];
-            });
+                [$k, $v] = explode(":", $line);
+                return [$k => $v];
+            })
+            ->except(['BEGIN', 'VERSION', 'UID', 'PRODID', 'END', 'REV', 'item1.X-ABLABEL']);
     }
 }
