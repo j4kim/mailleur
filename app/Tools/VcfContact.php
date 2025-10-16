@@ -60,7 +60,10 @@ class VcfContact
         // or sometimes empty
         $nValues = str($this->n)->explode(';')->filter();
         if ($nValues->count() > 1) {
-            return [ucfirst($nValues[1]), ucfirst($nValues[0])];
+            return [
+                str_replace(ucfirst($nValues[1]), '\,', ''),
+                ucfirst($nValues[0])
+            ];
         }
         // if N contains 0 or 1 value, we guess from FN
         // FN contains full name or email
@@ -70,7 +73,7 @@ class VcfContact
         if (str_contains($this->fn, " ")) {
             $fn = str($this->fn);
             return [
-                ucfirst($fn->before(" ")),
+                ucfirst($fn->before(" ")->replace('\,', '')),
                 ucfirst($fn->after(" ")),
             ];
         }
