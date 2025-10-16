@@ -80,6 +80,12 @@ class VcfContact
     function guessNamesFromEmail(): array
     {
         $beforeArobase = $this->emailParts[0];
+        if (in_array(strtolower($beforeArobase), ['contact', 'info', 'admin'])) {
+            return [
+                $this->guessOrg(),
+                null,
+            ];
+        }
         $parts = str($beforeArobase)->explode(".");
         return [
             ucfirst($parts[0]),
