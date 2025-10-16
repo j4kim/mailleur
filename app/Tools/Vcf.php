@@ -27,7 +27,7 @@ class Vcf
     public function toCsv(string $output)
     {
         $file = new SplFileObject($output, 'w');
-        $header = collect(['email', 'n', 'fn', 'first_name', 'last_name', 'org']);
+        $header = collect(['email', 'first_name', 'last_name', 'org']);
         $file->fputcsv($header->toArray());
         foreach ($this->items as $vcfContact) {
             $file->fputcsv($header->map(fn($key) => $vcfContact->$key)->toArray());
