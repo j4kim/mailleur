@@ -12,6 +12,6 @@ Artisan::command('vcf-to-csv {filename}', function (string $filename) {
     $this->info("Convert $filename to csv");
     $vcf = new Vcf($filename);
     $this->line($vcf->items->count() . " contacts found");
-    $this->line("Here is the first:");
-    $this->line(json_encode($vcf->items->first(), JSON_PRETTY_PRINT));
+    $vcf->toCsv("$filename.csv");
+    $this->comment("csv stored to $filename.csv");
 });
