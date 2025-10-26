@@ -16,7 +16,6 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('recipient_id')->constrained()->cascadeOnDelete();
             $table->string('token', 40)->unique();
-            $table->text('text');
             $table->text('url');
         });
     }
