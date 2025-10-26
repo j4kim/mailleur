@@ -23,23 +23,14 @@ class Recipient extends Model
     protected static function booted(): void
     {
         static::created(function (Recipient $recipient) {
-            $recipient->eventLogs()->create([
-                'type' => EventLogType::RecipientCreated,
-                'campaign_id' => $recipient->campaign_id,
-                'user_id' => Auth::id(),
-            ]);
+            $recipient->logEvent(EventLogType::RecipientCreated);
         });
 
         static::updated(function (Recipient $recipient) {
             if ($recipient->wasChanged('status')) {
-                $recipient->eventLogs()->create([
-                    'type' => EventLogType::StatusChanged,
-                    'campaign_id' => $recipient->campaign_id,
-                    'user_id' => Auth::id(),
-                    'meta' => [
-                        'old' => $recipient->getOriginal('status'),
-                        'new' => $recipient->status,
-                    ]
+                $recipient->logEvent(EventLogType::StatusChanged, [
+                    'old' => $recipient->getOriginal('status'),
+                    'new' => $recipient->status,
                 ]);
             }
         });
@@ -71,6 +62,16 @@ class Recipient extends Model
     public function eventLogs(): HasMany
     {
         return $this->hasMany(EventLog::class);
+    }
+
+    public function logEvent(EventLogType $type, ?array $meta = null): EventLog
+    {
+        return $this->eventLogs()->create([
+            'type' => $type,
+            'campaign_id' => $this->campaign_id,
+            'user_id' => Auth::id(),
+            'meta' => $meta,
+        ]);
     }
 
     public function getMergeTags(): array
