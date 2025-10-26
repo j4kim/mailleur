@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EventLogType;
 use App\Enums\RecipientStatus;
 use App\Mail\CampaignMail;
 use Exception;
@@ -12,12 +13,23 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 use function App\Tools\replaceMergeTags;
 
 class Recipient extends Model
 {
+    protected static function booted(): void
+    {
+        static::created(function (Recipient $recipient) {
+            $recipient->eventLogs()->create([
+                'type' => EventLogType::RecipientCreated,
+                'campaign_id' => $recipient->campaign_id,
+                'user_id' => Auth::id(),
+            ]);
+        });
+    }
 
     protected $touches = ['campaign'];
 
