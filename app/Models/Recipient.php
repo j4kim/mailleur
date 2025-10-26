@@ -125,8 +125,6 @@ class Recipient extends Model
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'code' => $e->getCode(),
-                'trace' => $e->getTraceAsString(),
             ]);
             throw $e;
         }
