@@ -29,6 +29,20 @@ class Recipient extends Model
                 'user_id' => Auth::id(),
             ]);
         });
+
+        static::updated(function (Recipient $recipient) {
+            if ($recipient->wasChanged('status')) {
+                $recipient->eventLogs()->create([
+                    'type' => EventLogType::StatusChanged,
+                    'campaign_id' => $recipient->campaign_id,
+                    'user_id' => Auth::id(),
+                    'meta' => [
+                        'old' => $recipient->getOriginal('status'),
+                        'new' => $recipient->status,
+                    ]
+                ]);
+            }
+        });
     }
 
     protected $touches = ['campaign'];

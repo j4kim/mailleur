@@ -9,6 +9,7 @@ enum EventLogType: string implements HasLabel, HasColor
 {
     case CampaignCreated = 'campaign-created';
     case RecipientCreated = 'recipient-created';
+    case StatusChanged = 'status-changed';
     case MailSent = 'mail-sent';
     case SendingFailed = 'sending-failed';
     case LinkClicked = 'link-clicked';
@@ -23,6 +24,7 @@ enum EventLogType: string implements HasLabel, HasColor
         return match ($this) {
             self::CampaignCreated => 'info',
             self::RecipientCreated => 'info',
+            self::StatusChanged => 'gray',
             self::MailSent => 'success',
             self::SendingFailed => 'danger',
             self::LinkClicked => 'success',
