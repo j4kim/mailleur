@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Mail;
 
 use function App\Tools\replaceMergeTags;
@@ -39,6 +40,11 @@ class Recipient extends Model
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class);
+    }
+
+    public function eventLogs(): HasMany
+    {
+        return $this->hasMany(EventLog::class);
     }
 
     public function getMergeTags(): array

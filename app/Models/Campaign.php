@@ -39,6 +39,11 @@ class Campaign extends Model
         return $this->hasMany(Recipient::class)->chaperone();
     }
 
+    public function eventLogs(): HasMany
+    {
+        return $this->hasMany(EventLog::class);
+    }
+
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
