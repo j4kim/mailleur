@@ -16,7 +16,7 @@ enum EventLogType: string implements HasLabel, HasColor
 
     public function getLabel(): ?string
     {
-        return $this->name;
+        return str($this->value)->replace('-', ' ')->ucfirst();
     }
 
     public function getColor(): string | array | null
