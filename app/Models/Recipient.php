@@ -6,6 +6,7 @@ use App\Enums\RecipientStatus;
 use App\Mail\CampaignMail;
 use Exception;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -72,6 +73,7 @@ class Recipient extends Model
         if (!$this->mail_body) {
             $this->mail_body = $this->generateMailBody();
         }
+        $this->rendered_mail_body = RichContentRenderer::make($this->mail_body)->toHtml();
         try {
             Mail::to($this->email)->send(new CampaignMail($this));
             $this->status = RecipientStatus::Sent;
