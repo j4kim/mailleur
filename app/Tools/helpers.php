@@ -39,3 +39,19 @@ function prose(?string $html)
 {
     return "<div class=\"prose dark:prose-invert max-w-full\">$html</div>";
 }
+
+function replaceMergeTags(array &$template, array $mergeTags): array
+{
+    foreach ($template as $key => &$value) {
+        if (gettype($value) !== 'array') {
+            continue;
+        }
+        if (isset($value['type']) && $value['type'] === 'mergeTag') {
+            $value['type'] = 'text';
+            $value['text'] = $mergeTags[$value['attrs']['id']];
+        } else {
+            $value = replaceMergeTags($value, $mergeTags);
+        }
+    }
+    return $template;
+}

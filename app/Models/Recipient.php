@@ -6,12 +6,13 @@ use App\Enums\RecipientStatus;
 use App\Mail\CampaignMail;
 use Exception;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Mail;
+
+use function App\Tools\replaceMergeTags;
 
 class Recipient extends Model
 {
@@ -45,11 +46,11 @@ class Recipient extends Model
         return ['email' => $this->email, ...$data];
     }
 
-    public function generateMailBody()
+    public function generateMailBody(): ?array
     {
         $template = $this->campaign->template;
         if (!$template) return null;
-        return $template;
+        return replaceMergeTags($template, $this->getMergeTags());
     }
 
     public function generateAndSave()
