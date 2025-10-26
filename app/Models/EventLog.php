@@ -8,6 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventLog extends Model
 {
+    public $timestamps = false;
+
+    protected static function booted(): void
+    {
+        static::creating(function (EventLog $eventLog) {
+            $eventLog->created_at = now();
+        });
+    }
+
     protected function casts(): array
     {
         return [
