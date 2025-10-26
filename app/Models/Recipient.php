@@ -22,6 +22,7 @@ class Recipient extends Model
     {
         return [
             'data' => 'array',
+            'mail_body' => 'array',
             'status' => RecipientStatus::class,
         ];
     }
@@ -44,13 +45,11 @@ class Recipient extends Model
         return ['email' => $this->email, ...$data];
     }
 
-    public function generateMailBody(): ?string
+    public function generateMailBody()
     {
         $template = $this->campaign->template;
         if (!$template) return null;
-        return RichContentRenderer::make($template)
-            ->mergeTags($this->getMergeTags())
-            ->toHtml();
+        return $template;
     }
 
     public function generateAndSave()
