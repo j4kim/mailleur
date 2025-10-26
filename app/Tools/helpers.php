@@ -47,18 +47,26 @@ function renderProse(array $content)
     return prose($rendered);
 }
 
-function replaceMergeTags(array &$content, array $mergeTags): array
+function findNodeRecursive(array &$node, string $nodeType, Closure $callback)
 {
-    foreach ($content as $key => &$value) {
-        if (gettype($value) !== 'array') {
+    foreach ($node as $key => &$child) {
+        if (gettype($child) !== 'array') {
             continue;
         }
-        if (isset($value['type']) && $value['type'] === 'mergeTag') {
-            $value['type'] = 'text';
-            $value['text'] = $mergeTags[$value['attrs']['id']];
-        } else {
-            $value = replaceMergeTags($value, $mergeTags);
+        if (isset($child['type']) && $child['type'] === $nodeType) {
+            $callback($child);
+            continue;
         }
+        $child = findNodeRecursive($child, $nodeType, $callback);
     }
+    return $node;
+}
+
+function replaceMergeTags(array $content, array $mergeTags): array
+{
+    findNodeRecursive($content['content'], 'mergeTag', function (array &$node) use ($mergeTags) {
+        $node['type'] = 'text';
+        $node['text'] = $mergeTags[$node['attrs']['id']];
+    });
     return $content;
 }
