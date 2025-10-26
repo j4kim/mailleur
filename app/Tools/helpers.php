@@ -3,6 +3,7 @@
 namespace App\Tools;
 
 use Closure;
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Filament\Notifications\Notification;
 
 function emailToName(string $email): string
@@ -40,9 +41,15 @@ function prose(?string $html)
     return "<div class=\"prose dark:prose-invert max-w-full\">$html</div>";
 }
 
-function replaceMergeTags(array &$template, array $mergeTags): array
+function renderProse(array $content)
 {
-    foreach ($template as $key => &$value) {
+    $rendered = RichContentRenderer::make($content)->toHtml();
+    return prose($rendered);
+}
+
+function replaceMergeTags(array &$content, array $mergeTags): array
+{
+    foreach ($content as $key => &$value) {
         if (gettype($value) !== 'array') {
             continue;
         }
@@ -53,5 +60,5 @@ function replaceMergeTags(array &$template, array $mergeTags): array
             $value = replaceMergeTags($value, $mergeTags);
         }
     }
-    return $template;
+    return $content;
 }

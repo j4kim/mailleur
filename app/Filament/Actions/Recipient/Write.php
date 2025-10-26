@@ -22,7 +22,7 @@ class Write extends EditAction
         $this->slideOver();
 
         $this->schema([
-            RichEditor::make('mail_body')
+            RichEditor::make('mail_body')->json()
         ]);
     }
 }
