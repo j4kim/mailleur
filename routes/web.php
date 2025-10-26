@@ -16,4 +16,4 @@ Route::get('/mail/{recipient}/render', function (Recipient $recipient) {
 Route::get('redirect/{token}', function (string $token) {
     $link = Link::where('token', $token)->firstOrFail();
     return redirect($link->url);
-});
+})->name('link-redirect');
