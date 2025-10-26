@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\EventLogType;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -22,6 +24,13 @@ class Campaign extends Model
         static::creating(function (Campaign $campaign) {
             $campaign->template = @$campaign->team->defaults['template'];
             $campaign->envelope = @$campaign->team->defaults['envelope'];
+        });
+
+        static::created(function (Campaign $campaign) {
+            $campaign->eventLogs()->create([
+                'type' => EventLogType::CampaignCreated,
+                'user_id' => Auth::id(),
+            ]);
         });
     }
 
