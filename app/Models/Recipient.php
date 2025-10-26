@@ -108,14 +108,26 @@ class Recipient extends Model
         }
         $this->rendered_mail_body = RichContentRenderer::make($this->mail_body)->toHtml();
         try {
-            Mail::to($this->email)->send(new CampaignMail($this));
+            $mail = new CampaignMail($this);
+            Mail::to($this->email)->send($mail);
             $this->status = RecipientStatus::Sent;
             $this->sent_at = now();
             $this->save();
+            $this->logEvent(EventLogType::MailSent, [
+                'content' => $mail->content()->htmlString,
+                'envelope' => $mail->envelope(),
+            ]);
         } catch (Exception $e) {
             $this->status = RecipientStatus::Failed;
             $this->failed_at = now();
             $this->save();
+            $this->logEvent(EventLogType::SendingFailed, [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'code' => $e->getCode(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             throw $e;
         }
     }
