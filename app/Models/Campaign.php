@@ -27,10 +27,7 @@ class Campaign extends Model
         });
 
         static::created(function (Campaign $campaign) {
-            $campaign->eventLogs()->create([
-                'type' => EventLogType::CampaignCreated,
-                'user_id' => Auth::id(),
-            ]);
+            $campaign->logEvent(EventLogType::CampaignCreated);
         });
     }
 
@@ -43,6 +40,11 @@ class Campaign extends Model
         ];
     }
 
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
+
     public function recipients(): HasMany
     {
         return $this->hasMany(Recipient::class)->chaperone();
@@ -53,9 +55,13 @@ class Campaign extends Model
         return $this->hasMany(EventLog::class);
     }
 
-    public function team(): BelongsTo
+    public function logEvent(EventLogType $type, ?array $meta = null): EventLog
     {
-        return $this->belongsTo(Team::class);
+        return $this->eventLogs()->create([
+            'type' => $type,
+            'user_id' => Auth::id(),
+            'meta' => $meta,
+        ]);
     }
 
     public function getMergeTags(): array
