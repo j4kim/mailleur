@@ -8,6 +8,7 @@ use Filament\Support\Contracts\HasLabel;
 enum EventLogType: string implements HasLabel, HasColor
 {
     case CampaignCreated = 'campaign-created';
+    case CampaignDuplicated = 'campaign-duplicated';
     case RecipientCreated = 'recipient-created';
     case StatusChanged = 'status-changed';
     case MailSent = 'mail-sent';
@@ -23,6 +24,7 @@ enum EventLogType: string implements HasLabel, HasColor
     {
         return match ($this) {
             self::CampaignCreated => 'info',
+            self::CampaignDuplicated => 'info',
             self::RecipientCreated => 'info',
             self::StatusChanged => 'gray',
             self::MailSent => 'success',
