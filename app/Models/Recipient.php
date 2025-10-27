@@ -61,7 +61,7 @@ class Recipient extends Model
 
     public function eventLogs(): HasMany
     {
-        return $this->hasMany(EventLog::class);
+        return $this->hasMany(EventLog::class)->latest();
     }
 
     public function logEvent(EventLogType $type, ?array $meta = null): EventLog
