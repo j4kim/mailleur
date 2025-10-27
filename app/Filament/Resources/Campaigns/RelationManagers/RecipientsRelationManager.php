@@ -82,6 +82,7 @@ class RecipientsRelationManager extends RelationManager
                 Actions\Ready::make('ready')->for(RS::Customized),
                 Actions\Send::make('send')->for(RS::Ready),
                 Actions\Preview::make('preview')->for(RS::Sent),
+                Actions\Logs::make('logs')->for(RS::Failed),
                 ActionGroup::make([
                     Actions\EditData::make()->for(RS::Initial, RS::Customized, RS::Failed),
                     Actions\SetStatus::make(),
@@ -90,6 +91,7 @@ class RecipientsRelationManager extends RelationManager
                     Actions\Write::make()->for(RS::Customized, RS::Failed),
                     Actions\Send::make()->for(RS::Failed),
                     Actions\Preview::make()->for(RS::Customized, RS::Ready, RS::Failed),
+                    Actions\Logs::make()->for(RS::Initial, RS::Customized, RS::Ready, RS::Sent),
                     DeleteAction::make(),
                 ]),
             ])

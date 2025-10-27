@@ -25,7 +25,6 @@ class Preview extends Action
         parent::setUp();
 
         $this->label("Preview");
-        $this->color('primary');
         $this->icon(Heroicon::Eye);
 
         $this->schema([
