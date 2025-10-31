@@ -29,7 +29,7 @@ enum EventLogType: string implements HasLabel, HasColor
             self::StatusChanged => 'gray',
             self::MailSent => 'success',
             self::SendingFailed => 'danger',
-            self::LinkClicked => 'success',
+            self::LinkClicked => 'info',
         };
     }
 }

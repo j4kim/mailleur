@@ -45,6 +45,24 @@ class DatabaseSeeder extends Seeder
                             ["type" => "mergeTag", "attrs" => ["id" => "name"]],
                         ],
                     ],
+                    [
+                        "type" => "paragraph",
+                        "content" => [
+                            [
+                                "type" => "text",
+                                "text" => "Doc Laravel",
+                                "marks" => [
+                                    [
+                                        "type" => "link",
+                                        "attrs" => [
+                                            "href" => "https://laravel.com/docs/",
+                                            "target" => "_blank",
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'columns' => ['name'],

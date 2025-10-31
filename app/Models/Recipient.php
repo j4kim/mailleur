@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
+use function App\Tools\replaceLinks;
 use function App\Tools\replaceMergeTags;
 
 class Recipient extends Model
@@ -59,6 +60,11 @@ class Recipient extends Model
         return $this->belongsTo(Campaign::class);
     }
 
+    public function links(): HasMany
+    {
+        return $this->hasMany(Link::class);
+    }
+
     public function eventLogs(): HasMany
     {
         return $this->hasMany(EventLog::class)->latest();
@@ -87,6 +93,12 @@ class Recipient extends Model
         return replaceMergeTags($template, $this->getMergeTags());
     }
 
+    public function renderMailBody(): string
+    {
+        $content = replaceLinks($this->mail_body, $this);
+        return RichContentRenderer::make($content)->toHtml();
+    }
+
     public function generateAndSave()
     {
         $this->mail_body = $this->generateMailBody();
@@ -106,7 +118,7 @@ class Recipient extends Model
         if (!$this->mail_body) {
             $this->mail_body = $this->generateMailBody();
         }
-        $this->rendered_mail_body = RichContentRenderer::make($this->mail_body)->toHtml();
+        $this->rendered_mail_body = $this->renderMailBody();
         try {
             $mail = new CampaignMail($this);
             Mail::to($this->email)->send($mail);
