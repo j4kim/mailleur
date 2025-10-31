@@ -18,5 +18,9 @@
         <x-filament::badge :color="$new->getColor()" size="sm">
             {{ $new->getLabel() }}
         </x-filament::badge>
+    @elseif ($eventLog->type === EventLogType::SendingFailed)
+        <x-filament::link :href="route('event-logs.sending-failed', $eventLog)" target="_blank">
+            Details
+        </x-filament::link>
     @endif
 </div>
