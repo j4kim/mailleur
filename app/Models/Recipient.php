@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EventLogType;
 use App\Enums\RecipientStatus;
 use App\Mail\CampaignMail;
 use Exception;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 use function App\Tools\replaceLinks;
@@ -19,6 +21,21 @@ use function App\Tools\replaceMergeTags;
 
 class Recipient extends Model
 {
+    protected static function booted(): void
+    {
+        static::created(function (Recipient $recipient) {
+            $recipient->logEvent(EventLogType::RecipientCreated);
+        });
+
+        static::updated(function (Recipient $recipient) {
+            if ($recipient->wasChanged('status')) {
+                $recipient->logEvent(EventLogType::StatusChanged, [
+                    'old' => $recipient->getOriginal('status'),
+                    'new' => $recipient->status,
+                ]);
+            }
+        });
+    }
 
     protected $touches = ['campaign'];
 
@@ -46,6 +63,21 @@ class Recipient extends Model
     public function links(): HasMany
     {
         return $this->hasMany(Link::class);
+    }
+
+    public function eventLogs(): HasMany
+    {
+        return $this->hasMany(EventLog::class)->latest();
+    }
+
+    public function logEvent(EventLogType $type, ?array $meta = null): EventLog
+    {
+        return $this->eventLogs()->create([
+            'type' => $type,
+            'campaign_id' => $this->campaign_id,
+            'user_id' => Auth::id(),
+            'meta' => $meta,
+        ]);
     }
 
     public function getMergeTags(): array
@@ -88,14 +120,25 @@ class Recipient extends Model
         }
         $this->rendered_mail_body = $this->renderMailBody();
         try {
-            Mail::to($this->email)->send(new CampaignMail($this));
+            $mail = new CampaignMail($this);
+            Mail::to($this->email)->send($mail);
             $this->status = RecipientStatus::Sent;
             $this->sent_at = now();
             $this->save();
+            $this->logEvent(EventLogType::MailSent, [
+                'content' => $mail->content()->htmlString,
+                'envelope' => $mail->envelope(),
+            ]);
         } catch (Exception $e) {
             $this->status = RecipientStatus::Failed;
             $this->failed_at = now();
             $this->save();
+            $this->logEvent(EventLogType::SendingFailed, [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             throw $e;
         }
     }

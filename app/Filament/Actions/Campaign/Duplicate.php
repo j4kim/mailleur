@@ -2,8 +2,10 @@
 
 namespace App\Filament\Actions\Campaign;
 
+use App\Enums\EventLogType;
 use App\Enums\RecipientStatus;
 use App\Filament\Resources\Campaigns\CampaignResource;
+use App\Models\Campaign;
 use App\Models\Recipient;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -41,7 +43,10 @@ class Duplicate extends Action
             $replica = $record->replicate()->fill([
                 'subject' => $data['subject'],
             ]);
-            $replica->save();
+            $replica->saveQuietly();
+            $replica->logEvent(EventLogType::CampaignDuplicated, [
+                'from' => $record->id,
+            ]);
             if ($data['duplicate_recipients']) {
                 $replica->recipients()->createMany(
                     $record->recipients->map(function (Recipient $recipient) {

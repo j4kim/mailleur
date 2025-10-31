@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\EventLogType;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -23,6 +25,10 @@ class Campaign extends Model
             $campaign->template = @$campaign->team->defaults['template'];
             $campaign->envelope = @$campaign->team->defaults['envelope'];
         });
+
+        static::created(function (Campaign $campaign) {
+            $campaign->logEvent(EventLogType::CampaignCreated);
+        });
     }
 
     protected function casts(): array
@@ -34,14 +40,28 @@ class Campaign extends Model
         ];
     }
 
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
+
     public function recipients(): HasMany
     {
         return $this->hasMany(Recipient::class)->chaperone();
     }
 
-    public function team(): BelongsTo
+    public function eventLogs(): HasMany
     {
-        return $this->belongsTo(Team::class);
+        return $this->hasMany(EventLog::class);
+    }
+
+    public function logEvent(EventLogType $type, ?array $meta = null): EventLog
+    {
+        return $this->eventLogs()->create([
+            'type' => $type,
+            'user_id' => Auth::id(),
+            'meta' => $meta,
+        ]);
     }
 
     public function getMergeTags(): array
