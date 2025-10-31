@@ -12,3 +12,7 @@ Route::get('/mail/{recipient}/render', function (Recipient $recipient) {
 Route::get('/event-logs/{eventLog}/sending-failed', function (EventLog $eventLog) {
     return view('event-logs.sending-failed', $eventLog);
 })->middleware('auth')->name('event-logs.sending-failed');
+
+Route::get('/event-logs/{eventLog}/mail-sent', function (EventLog $eventLog) {
+    return view('event-logs.mail-sent', $eventLog);
+})->middleware('auth')->name('event-logs.mail-sent');

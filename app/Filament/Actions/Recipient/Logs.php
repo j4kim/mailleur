@@ -52,6 +52,7 @@ class Logs extends Action
                         ->columnSpan(['default' => 12, 'md' => 12, 'lg' => 6])
                         ->visible(fn(EventLog $eventLog) => in_array($eventLog->type, [
                             EventLogType::StatusChanged,
+                            EventLogType::MailSent,
                             EventLogType::SendingFailed,
                         ])),
                 ])
