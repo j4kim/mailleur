@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use Filament\Support\Colors\Color;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
@@ -25,11 +26,11 @@ enum EventLogType: string implements HasLabel, HasColor
         return match ($this) {
             self::CampaignCreated => 'info',
             self::CampaignDuplicated => 'info',
-            self::RecipientCreated => 'info',
+            self::RecipientCreated => Color::Indigo,
             self::StatusChanged => 'gray',
             self::MailSent => 'success',
             self::SendingFailed => 'danger',
-            self::LinkClicked => 'success',
+            self::LinkClicked => Color::Cyan,
         };
     }
 }

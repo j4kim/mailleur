@@ -50,11 +50,7 @@ class Logs extends Action
                         ))
                         ->hiddenLabel()
                         ->columnSpan(['default' => 12, 'md' => 12, 'lg' => 6])
-                        ->visible(fn(EventLog $eventLog) => in_array($eventLog->type, [
-                            EventLogType::StatusChanged,
-                            EventLogType::MailSent,
-                            EventLogType::SendingFailed,
-                        ])),
+                        ->hidden(fn(EventLog $eventLog) => $eventLog->type == EventLogType::RecipientCreated),
                 ])
                 ->columns(['default' => 12])
         ]);
