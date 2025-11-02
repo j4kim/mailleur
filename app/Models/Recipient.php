@@ -101,7 +101,7 @@ class Recipient extends Model
     public function renderMailBody(): string
     {
         $content = $this->campaign->enable_logged_links ?
-            $content = replaceLinks($this->mail_body, $this) :
+            replaceLinks($this->mail_body, $this) :
             $this->mail_body;
         return RichContentRenderer::make($content)->toHtml();
     }
