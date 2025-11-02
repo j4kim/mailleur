@@ -55,6 +55,12 @@ class RecipientsRelationManager extends RelationManager
             }),
             TextColumn::make('status')
                 ->badge(),
+            TextColumn::make('clicks_count')
+                ->visible($campaign->enable_logged_links)
+                ->counts('clicks')
+                ->label('Clicks')
+                ->sortable()
+                ->toggleable(),
             TextColumn::make('sent_at')
                 ->dateTime('d.m.Y H:i')
                 ->sortable()

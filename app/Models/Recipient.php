@@ -70,6 +70,11 @@ class Recipient extends Model
         return $this->hasMany(EventLog::class)->latest();
     }
 
+    public function clicks(): HasMany
+    {
+        return $this->eventLogs()->where('type', EventLogType::LinkClicked);
+    }
+
     public function logEvent(EventLogType $type, ?array $meta = null): EventLog
     {
         return $this->eventLogs()->create([
