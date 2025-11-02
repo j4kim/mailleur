@@ -20,12 +20,8 @@
         </x-filament::badge>
     @elseif ($eventLog->type === EventLogType::LinkClicked)
         {{ @$eventLog->meta['url'] }}
-    @elseif ($eventLog->type === EventLogType::MailSent)
-        <x-filament::link :href="route('event-logs.mail-sent', $eventLog)" target="_blank">
-            Details
-        </x-filament::link>
-    @elseif ($eventLog->type === EventLogType::SendingFailed)
-        <x-filament::link :href="route('event-logs.sending-failed', $eventLog)" target="_blank">
+    @else
+        <x-filament::link :href="route('event-log-details', $eventLog)" target="_blank">
             Details
         </x-filament::link>
     @endif
