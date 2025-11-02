@@ -3,6 +3,7 @@
 namespace App\Tools;
 
 use Closure;
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Filament\Notifications\Notification;
 
 function emailToName(string $email): string
@@ -38,4 +39,34 @@ function errorNotif(string $message, string $title = "Error"): Notification
 function prose(?string $html)
 {
     return "<div class=\"prose dark:prose-invert max-w-full\">$html</div>";
+}
+
+function renderProse(array $content)
+{
+    $rendered = RichContentRenderer::make($content)->toHtml();
+    return prose($rendered);
+}
+
+function findNodeRecursive(array &$node, string $nodeType, Closure $callback)
+{
+    foreach ($node as $key => &$child) {
+        if (gettype($child) !== 'array') {
+            continue;
+        }
+        if (isset($child['type']) && $child['type'] === $nodeType) {
+            $callback($child);
+            continue;
+        }
+        $child = findNodeRecursive($child, $nodeType, $callback);
+    }
+    return $node;
+}
+
+function replaceMergeTags(array $content, array $mergeTags): array
+{
+    findNodeRecursive($content['content'], 'mergeTag', function (array &$node) use ($mergeTags) {
+        $node['type'] = 'text';
+        $node['text'] = $mergeTags[$node['attrs']['id']];
+    });
+    return $content;
 }

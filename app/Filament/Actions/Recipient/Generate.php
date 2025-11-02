@@ -29,12 +29,14 @@ class Generate extends EditAction
         $this->slideOver();
 
         $this->schema([
-            RichEditor::make('mail_body')
+            RichEditor::make('mail_body')->json()
         ]);
 
         $this->mutateRecordDataUsing(
-            fn(Recipient $recipient): array =>
-            ['mail_body' => $recipient->generateMailBody()]
+            function (Recipient $recipient) {
+                $mailBody = $recipient->generateMailBody();
+                return ['mail_body' => $mailBody];
+            }
         );
 
         $this->mutateDataUsing(function (array $data): array {

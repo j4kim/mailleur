@@ -9,7 +9,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
 
 use function App\Tools\formatAddress;
-use function App\Tools\prose;
+use function App\Tools\renderProse;
 
 class Preview extends Action
 {
@@ -25,7 +25,6 @@ class Preview extends Action
         parent::setUp();
 
         $this->label("Preview");
-        $this->color('primary');
         $this->icon(Heroicon::Eye);
 
         $this->schema([
@@ -37,7 +36,7 @@ class Preview extends Action
                 ->columnSpanFull()
                 ->schema([
                     TextEntry::make('mail_body')
-                        ->state(fn(Recipient $r) => prose($r->mail_body))
+                        ->state(fn(Recipient $r) => renderProse($r->mail_body))
                         ->hiddenLabel()
                         ->html()
                 ]),
