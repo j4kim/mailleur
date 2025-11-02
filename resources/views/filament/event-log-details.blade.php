@@ -18,6 +18,8 @@
         <x-filament::badge :color="$new->getColor()" size="sm">
             {{ $new->getLabel() }}
         </x-filament::badge>
+    @elseif ($eventLog->type === EventLogType::LinkClicked)
+        {{ @$eventLog->meta['url'] }}
     @elseif ($eventLog->type === EventLogType::MailSent)
         <x-filament::link :href="route('event-logs.mail-sent', $eventLog)" target="_blank">
             Details
