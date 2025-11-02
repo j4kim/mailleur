@@ -31,6 +31,9 @@ class RecipientsRelationManager extends RelationManager
         $campaign = $this->getOwnerRecord();
 
         $columns = [
+            TextColumn::make('id')
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('created_at')
                 ->dateTime('d.m.Y H:i')
                 ->sortable()
