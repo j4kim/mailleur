@@ -37,6 +37,7 @@ class Campaign extends Model
             'template' => 'array',
             'columns' => 'array',
             'envelope' => 'array',
+            'enable_logged_links' => 'boolean',
         ];
     }
 
