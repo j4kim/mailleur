@@ -68,7 +68,8 @@ function replaceMergeTags(array $content, array $mergeTags): array
 {
     findNodeRecursive($content['content'], 'mergeTag', function (array &$node) use ($mergeTags) {
         $node['type'] = 'text';
-        $node['text'] = $mergeTags[$node['attrs']['id']];
+        $key = $node['attrs']['id'];
+        $node['text'] = $mergeTags[$key] ?? "{{ $key }}";
     });
     return $content;
 }
