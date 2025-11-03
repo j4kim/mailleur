@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Mail;
 
+use function App\Tools\replaceMergeTags;
+
 class Recipient extends Model
 {
 
@@ -22,6 +24,7 @@ class Recipient extends Model
     {
         return [
             'data' => 'array',
+            'mail_body' => 'array',
             'status' => RecipientStatus::class,
         ];
     }
@@ -44,13 +47,16 @@ class Recipient extends Model
         return ['email' => $this->email, ...$data];
     }
 
-    public function generateMailBody(): ?string
+    public function generateMailBody(): ?array
     {
         $template = $this->campaign->template;
         if (!$template) return null;
-        return RichContentRenderer::make($template)
-            ->mergeTags($this->getMergeTags())
-            ->toHtml();
+        return replaceMergeTags($template, $this->getMergeTags());
+    }
+
+    public function renderMailBody(): string
+    {
+        return RichContentRenderer::make($this->mail_body)->toHtml();
     }
 
     public function generateAndSave()
@@ -72,6 +78,7 @@ class Recipient extends Model
         if (!$this->mail_body) {
             $this->mail_body = $this->generateMailBody();
         }
+        $this->rendered_mail_body = $this->renderMailBody();
         try {
             Mail::to($this->email)->send(new CampaignMail($this));
             $this->status = RecipientStatus::Sent;
