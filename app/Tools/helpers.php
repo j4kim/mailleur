@@ -2,9 +2,11 @@
 
 namespace App\Tools;
 
+use App\Models\Recipient;
 use Closure;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Str;
 
 function emailToName(string $email): string
 {
@@ -67,6 +69,18 @@ function replaceMergeTags(array $content, array $mergeTags): array
     findNodeRecursive($content['content'], 'mergeTag', function (array &$node) use ($mergeTags) {
         $node['type'] = 'text';
         $node['text'] = $mergeTags[$node['attrs']['id']];
+    });
+    return $content;
+}
+
+function replaceLinks(array $content, Recipient $recipient): array
+{
+    findNodeRecursive($content['content'], 'link', function (array &$node) use ($recipient) {
+        $link = $recipient->links()->create([
+            'token' => Str::random(40),
+            'url' => $node['attrs']['href'],
+        ]);
+        $node['attrs']['href'] = route('link-redirect', $link->token);
     });
     return $content;
 }
