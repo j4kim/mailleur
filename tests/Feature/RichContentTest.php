@@ -2,16 +2,20 @@
 
 namespace Tests\Feature;
 
+use App\Models\Recipient;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tiptap\Editor;
 
+use function App\Tools\replaceLinks;
 use function App\Tools\replaceMergeTags;
 
 class RichContentTest extends TestCase
 {
+    use RefreshDatabase;
+
     private array $doc = [
         "type" => "doc",
         "content" => [
@@ -102,5 +106,37 @@ class RichContentTest extends TestCase
         $doc = replaceMergeTags($this->doc, []);
         $rendered = RichContentRenderer::make($doc)->toHtml();
         $this->assertEquals($rendered, "<p>Salut </p>");
+    }
+
+    public function test_replace_links(): void
+    {
+        $doc = [
+            "type" => "doc",
+            "content" => [
+                [
+                    "type" => "paragraph",
+                    "content" => [
+                        [
+                            "type" => "text",
+                            "text" => "Doc Laravel",
+                            "marks" => [
+                                [
+                                    "type" => "link",
+                                    "attrs" => [
+                                        "href" => "https://laravel.com/docs/",
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        ];
+        $this->seed();
+        $recipient = Recipient::first();
+        $updated = replaceLinks($doc, $recipient);
+        $rendered = RichContentRenderer::make($updated)->toHtml();
+        $href = route('link-redirect', $recipient->links()->first()->token);
+        $this->assertEquals($rendered, '<p><a target="_blank" rel="noopener noreferrer nofollow" href="' . $href . '">Doc Laravel</a></p>');
     }
 }
