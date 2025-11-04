@@ -7,7 +7,6 @@ use Closure;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Str;
-use Tiptap\Editor;
 
 function emailToName(string $email): string
 {
@@ -67,8 +66,11 @@ function findNodeRecursive(array &$node, string $nodeType, Closure $callback)
 
 function replaceMergeTags(array $content, array $mergeTags): array
 {
-    $rendered = RichContentRenderer::make($content)->mergeTags($mergeTags)->toHtml();
-    return (new Editor())->setContent($rendered)->getDocument();
+    $renderer = RichContentRenderer::make($content)->mergeTags($mergeTags);
+    $rendered = $renderer->toHtml();
+    $editor = $renderer->getEditor();
+    $doc = $editor->setContent($rendered)->getDocument();
+    return $doc;
 }
 
 function replaceLinks(array $content, Recipient $recipient): array

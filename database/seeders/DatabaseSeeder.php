@@ -33,38 +33,11 @@ class DatabaseSeeder extends Seeder
 
         $team->members()->attach($user, ['is_admin' => true]);
 
+        $exampleTemplate = file_get_contents(database_path("seeders/example_template.json"));
+
         $campaign = $team->campaigns()->create([
             'subject' => "Hello",
-            'template' => [
-                "type" => "doc",
-                "content" => [
-                    [
-                        "type" => "paragraph",
-                        "content" => [
-                            ["type" => "text", "text" => "Salut "],
-                            ["type" => "mergeTag", "attrs" => ["id" => "name"]],
-                        ],
-                    ],
-                    [
-                        "type" => "paragraph",
-                        "content" => [
-                            [
-                                "type" => "text",
-                                "text" => "Doc Laravel",
-                                "marks" => [
-                                    [
-                                        "type" => "link",
-                                        "attrs" => [
-                                            "href" => "https://laravel.com/docs/",
-                                            "target" => "_blank",
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
+            'template' => json_decode($exampleTemplate, true),
             'columns' => ['name'],
         ]);
 

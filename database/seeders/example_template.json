@@ -1,0 +1,425 @@
+{
+    "type": "doc",
+    "content": [
+        {
+            "type": "heading",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Heading"
+                }
+            ],
+            "attrs": {
+                "textAlign": "start",
+                "level": 2
+            }
+        },
+        {
+            "type": "heading",
+            "attrs": {
+                "textAlign": "start",
+                "level": 3
+            },
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Subheading"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "attrs": {
+                "textAlign": "start"
+            },
+            "content": [
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "link",
+                            "attrs": {
+                                "href": "https:\/\/laravel.com",
+                                "target": null,
+                                "rel": "noopener noreferrer nofollow",
+                                "class": null
+                            }
+                        }
+                    ],
+                    "text": "link"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "attrs": {
+                "textAlign": "start"
+            },
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Some "
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "bold"
+                        }
+                    ],
+                    "text": "bold"
+                },
+                {
+                    "type": "text",
+                    "text": ", "
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "italic"
+                        }
+                    ],
+                    "text": "italic"
+                },
+                {
+                    "type": "text",
+                    "text": ", "
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "underline"
+                        }
+                    ],
+                    "text": "underlined"
+                },
+                {
+                    "type": "text",
+                    "text": ", "
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "strike"
+                        }
+                    ],
+                    "text": "striked"
+                },
+                {
+                    "type": "text",
+                    "text": " text"
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "subscript"
+                        }
+                    ],
+                    "text": "sub"
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "superscript"
+                        }
+                    ],
+                    "text": "sup"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "attrs": {
+                "textAlign": "center"
+            },
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Centered paragraph"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "attrs": {
+                "textAlign": "end"
+            },
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Right-aligned paragraph"
+                }
+            ]
+        },
+        {
+            "type": "blockquote",
+            "content": [
+                {
+                    "type": "paragraph",
+                    "attrs": {
+                        "textAlign": "start"
+                    },
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "This is a blockquote"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "codeBlock",
+            "attrs": {
+                "language": null
+            },
+            "content": [
+                {
+                    "type": "text",
+                    "text": "And this is a code block"
+                }
+            ]
+        },
+        {
+            "type": "bulletList",
+            "content": [
+                {
+                    "type": "listItem",
+                    "content": [
+                        {
+                            "type": "paragraph",
+                            "attrs": {
+                                "textAlign": "start"
+                            },
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "text": "item 1 "
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "listItem",
+                    "content": [
+                        {
+                            "type": "paragraph",
+                            "attrs": {
+                                "textAlign": "start"
+                            },
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "text": "item 2"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "table",
+            "content": [
+                {
+                    "type": "tableRow",
+                    "content": [
+                        {
+                            "type": "tableHeader",
+                            "attrs": {
+                                "colspan": 1,
+                                "rowspan": 1,
+                                "colwidth": null
+                            },
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "attrs": {
+                                        "textAlign": "start"
+                                    },
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "this"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "tableHeader",
+                            "attrs": {
+                                "colspan": 1,
+                                "rowspan": 1,
+                                "colwidth": null
+                            },
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "attrs": {
+                                        "textAlign": "start"
+                                    },
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "is"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "tableHeader",
+                            "attrs": {
+                                "colspan": 1,
+                                "rowspan": 1,
+                                "colwidth": null
+                            },
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "attrs": {
+                                        "textAlign": "start"
+                                    },
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "a"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "tableRow",
+                    "content": [
+                        {
+                            "type": "tableCell",
+                            "attrs": {
+                                "colspan": 1,
+                                "rowspan": 1,
+                                "colwidth": null
+                            },
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "attrs": {
+                                        "textAlign": "start"
+                                    },
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "table"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "tableCell",
+                            "attrs": {
+                                "colspan": 1,
+                                "rowspan": 1,
+                                "colwidth": null
+                            },
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "attrs": {
+                                        "textAlign": "start"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "tableCell",
+                            "attrs": {
+                                "colspan": 1,
+                                "rowspan": 1,
+                                "colwidth": null
+                            },
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "attrs": {
+                                        "textAlign": "start"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "orderedList",
+            "attrs": {
+                "start": 1,
+                "type": null
+            },
+            "content": [
+                {
+                    "type": "listItem",
+                    "content": [
+                        {
+                            "type": "paragraph",
+                            "attrs": {
+                                "textAlign": "start"
+                            },
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "text": "order list item"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "listItem",
+                    "content": [
+                        {
+                            "type": "paragraph",
+                            "attrs": {
+                                "textAlign": "start"
+                            },
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "text": "another"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "attrs": {
+                "textAlign": "start"
+            },
+            "content": [
+                {
+                    "type": "text",
+                    "text": "And merge tags, your name is: "
+                },
+                {
+                    "type": "mergeTag",
+                    "attrs": {
+                        "id": "name",
+                        "label": null
+                    }
+                }
+            ]
+        }
+    ]
+}
