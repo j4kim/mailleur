@@ -63,6 +63,7 @@ class RichContentTest extends TestCase
             "content" => [
                 [
                     "type" => "paragraph",
+                    "attrs" => ["textAlign" => "start"],
                     "content" => [
                         ["type" => "text", "text" => "Salut Sandwich"],
                     ],
@@ -86,6 +87,7 @@ class RichContentTest extends TestCase
             "content" => [
                 [
                     "type" => "paragraph",
+                    "attrs" => ["textAlign" => "start"],
                     "content" => [
                         ["type" => "text", "text" => "Salut "],
                     ],
