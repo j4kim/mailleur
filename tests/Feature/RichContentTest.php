@@ -60,8 +60,7 @@ class RichContentTest extends TestCase
                 [
                     "type" => "paragraph",
                     "content" => [
-                        ["type" => "text", "text" => "Salut "],
-                        ["type" => "text", "attrs" => ["id" => "name"], "text" => "Sandwich"],
+                        ["type" => "text", "text" => "Salut Sandwich"],
                     ],
                 ],
             ],
@@ -85,7 +84,6 @@ class RichContentTest extends TestCase
                     "type" => "paragraph",
                     "content" => [
                         ["type" => "text", "text" => "Salut "],
-                        ["type" => "text", "attrs" => ["id" => "name"], "text" => ""],
                     ],
                 ],
             ],
@@ -103,6 +101,6 @@ class RichContentTest extends TestCase
     {
         $doc = replaceMergeTags($this->doc, []);
         $rendered = RichContentRenderer::make($doc)->toHtml();
-        $this->assertEquals($rendered, "<p>Salut {{ name }}</p>");
+        $this->assertEquals($rendered, "<p>Salut </p>");
     }
 }
