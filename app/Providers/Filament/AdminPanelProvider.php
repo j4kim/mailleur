@@ -79,8 +79,9 @@ class AdminPanelProvider extends PanelProvider
             $editor
                 ->toolbarButtons([
                     ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link'],
-                    ['h2', 'h3', 'alignStart', 'alignCenter', 'alignEnd'],
-                    ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                    ['highlight', 'textColor', 'clearFormatting'],
+                    ['h2', 'h3', 'small', 'alignStart', 'alignCenter', 'alignEnd'],
+                    ['blockquote', 'codeBlock', 'bulletList', 'orderedList', 'horizontalRule'],
                     ['table', 'attachFiles', 'mergeTags'],
                     ['undo', 'redo'],
                 ]);
