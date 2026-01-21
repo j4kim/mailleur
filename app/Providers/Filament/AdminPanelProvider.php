@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Tenancy\EditTeamProfile;
 use App\Filament\Pages\Tenancy\RegisterTeam;
 use App\Models\Team;
+use Filament\Forms\Components\RichEditor;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -70,5 +71,27 @@ class AdminPanelProvider extends PanelProvider
                 PanelsRenderHook::SIDEBAR_FOOTER,
                 fn(): View  => view('filament.hooks.sidebar-footer'),
             );
+    }
+
+    public function boot(): void
+    {
+        RichEditor::configureUsing(function (RichEditor $editor): void {
+            $editor
+                ->toolbarButtons([
+                    ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link'],
+                    ['highlight', 'textColor', 'clearFormatting'],
+                    ['h2', 'h3', 'small', 'alignStart', 'alignCenter', 'alignEnd'],
+                    ['blockquote', 'codeBlock', 'bulletList', 'orderedList', 'horizontalRule'],
+                    ['table', 'attachFiles', 'mergeTags'],
+                    ['undo', 'redo'],
+                ])
+                ->textColors([
+                    '#ef4444' => 'Red',
+                    '#f59e0b' => 'Orange',
+                    '#10b981' => 'Green',
+                    '#0ea5e9' => 'Blue',
+                ])
+                ->customTextColors();
+        });
     }
 }

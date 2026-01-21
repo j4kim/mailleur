@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tiptap\Editor;
 
+use function App\Tools\renderRichText;
 use function App\Tools\replaceLinks;
 use function App\Tools\replaceMergeTags;
 
@@ -31,14 +32,14 @@ class RichContentTest extends TestCase
 
     public function test_html_renderer(): void
     {
-        $rendered = RichContentRenderer::make($this->doc)->toHtml();
+        $rendered = renderRichText($this->doc);
 
         $this->assertEquals($rendered, "<p>Salut <span></span></p>");
     }
 
     public function test_convert_twice_to_remove_merge_tags(): void
     {
-        $rendered = RichContentRenderer::make($this->doc)->toHtml();
+        $rendered = renderRichText($this->doc);
 
         $array = (new Editor)->setContent($rendered)->getDocument();
 

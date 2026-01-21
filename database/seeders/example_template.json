@@ -110,6 +110,19 @@
                 },
                 {
                     "type": "text",
+                    "text": ", "
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "small"
+                        }
+                    ],
+                    "text": "small"
+                },
+                {
+                    "type": "text",
                     "text": " text"
                 },
                 {
@@ -129,8 +142,76 @@
                         }
                     ],
                     "text": "sup"
+                },
+                {
+                    "type": "text",
+                    "text": ", "
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "textColor",
+                            "attrs": {
+                                "data-color": "purple"
+                            }
+                        }
+                    ],
+                    "text": "this"
+                },
+                {
+                    "type": "text",
+                    "text": " "
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "textColor",
+                            "attrs": {
+                                "data-color": "red"
+                            }
+                        }
+                    ],
+                    "text": "is"
+                },
+                {
+                    "type": "text",
+                    "text": " "
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "textColor",
+                            "attrs": {
+                                "data-color": "emerald"
+                            }
+                        }
+                    ],
+                    "text": "colored"
+                },
+                {
+                    "type": "text",
+                    "text": " and "
+                },
+                {
+                    "type": "text",
+                    "marks": [
+                        {
+                            "type": "highlight"
+                        }
+                    ],
+                    "text": "this is highlighted"
+                },
+                {
+                    "type": "text",
+                    "text": ". "
                 }
             ]
+        },
+        {
+            "type": "horizontalRule"
         },
         {
             "type": "paragraph",

@@ -40,12 +40,12 @@ function errorNotif(string $message, string $title = "Error"): Notification
 
 function prose(?string $html)
 {
-    return "<div class=\"prose dark:prose-invert max-w-full\">$html</div>";
+    return "<div class=\"fi-prose\">$html</div>";
 }
 
 function renderProse(array $content)
 {
-    $rendered = RichContentRenderer::make($content)->toHtml();
+    $rendered = renderRichText($content);
     return prose($rendered);
 }
 
@@ -66,11 +66,25 @@ function findNodeRecursive(array &$node, string $nodeType, Closure $callback)
 
 function replaceMergeTags(array $content, array $mergeTags): array
 {
-    $renderer = RichContentRenderer::make($content)->mergeTags($mergeTags);
-    $rendered = $renderer->toHtml();
-    $editor = $renderer->getEditor();
+    $rendered = renderRichText($content, $mergeTags);
+    $editor = (new RichContentRenderer())->getEditor();
     $doc = $editor->setContent($rendered)->getDocument();
     return $doc;
+}
+
+function renderRichText(array $doc, ?array $mergeTags = null): string
+{
+    $renderer = RichContentRenderer::make($doc);
+    if ($mergeTags) {
+        $renderer->mergeTags($mergeTags);
+    }
+    $html = str($renderer->toHtml());
+    $html = $html->replace(' data-type="mergeTag"', '');
+    $html = $html->replaceMatches('/--color: (#......);/', function (array $matches) {
+        $hexValue = $matches[1];
+        return $matches[0] . " color: $hexValue;";
+    });
+    return $html;
 }
 
 function replaceLinks(array $content, Recipient $recipient): array
