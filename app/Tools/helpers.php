@@ -40,7 +40,7 @@ function errorNotif(string $message, string $title = "Error"): Notification
 
 function prose(?string $html)
 {
-    return "<div class=\"prose dark:prose-invert max-w-full\">$html</div>";
+    return "<div class=\"fi-prose\">$html</div>";
 }
 
 function renderProse(array $content)
