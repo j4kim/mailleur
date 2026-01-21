@@ -7,7 +7,6 @@ use App\Enums\RecipientStatus;
 use App\Mail\CampaignMail;
 use Exception;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
+use function App\Tools\renderRichText;
 use function App\Tools\replaceLinks;
 use function App\Tools\replaceMergeTags;
 
@@ -103,7 +103,7 @@ class Recipient extends Model
         $content = $this->campaign->enable_logged_links ?
             replaceLinks($this->mail_body, $this) :
             $this->mail_body;
-        return RichContentRenderer::make($content)->toHtml();
+        return renderRichText($content);
     }
 
     public function generateAndSave()
