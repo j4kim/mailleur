@@ -84,7 +84,14 @@ class AdminPanelProvider extends PanelProvider
                     ['blockquote', 'codeBlock', 'bulletList', 'orderedList', 'horizontalRule'],
                     ['table', 'attachFiles', 'mergeTags'],
                     ['undo', 'redo'],
-                ]);
+                ])
+                ->textColors([
+                    '#ef4444' => 'Red',
+                    '#f59e0b' => 'Orange',
+                    '#10b981' => 'Green',
+                    '#0ea5e9' => 'Blue',
+                ])
+                ->customTextColors();
         });
     }
 }

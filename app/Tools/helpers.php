@@ -79,8 +79,12 @@ function renderRichText(array $doc, ?array $mergeTags = null): string
         $renderer->mergeTags($mergeTags);
     }
     $html = str($renderer->toHtml());
-    $rendered = $html->replace(' data-type="mergeTag"', '');
-    return $rendered;
+    $html = $html->replace(' data-type="mergeTag"', '');
+    $html = $html->replaceMatches('/--color: (#......);/', function (array $matches) {
+        $hexValue = $matches[1];
+        return $matches[0] . " color: $hexValue;";
+    });
+    return $html;
 }
 
 function replaceLinks(array $content, Recipient $recipient): array
