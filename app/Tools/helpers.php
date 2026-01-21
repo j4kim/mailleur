@@ -45,7 +45,7 @@ function prose(?string $html)
 
 function renderProse(array $content)
 {
-    $rendered = RichContentRenderer::make($content)->toHtml();
+    $rendered = renderRichText($content);
     return prose($rendered);
 }
 

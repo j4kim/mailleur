@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\EventLogType;
-use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,6 +15,7 @@ use League\Csv\Info;
 use League\Csv\Reader;
 
 use function App\Tools\prose;
+use function App\Tools\renderRichText;
 
 class Campaign extends Model
 {
@@ -115,9 +115,7 @@ class Campaign extends Model
         $mergeTags = collect($this->getMergeTags())
             ->mapWithKeys(fn($c) => [$c => "{{ $c }}"])
             ->toArray();
-        $rendered = RichContentRenderer::make($this->template)
-            ->mergeTags($mergeTags)
-            ->toHtml();
+        $rendered = renderRichText($this->template, $mergeTags);
         return prose($rendered);
     }
 
