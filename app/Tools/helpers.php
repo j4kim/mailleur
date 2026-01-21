@@ -66,11 +66,21 @@ function findNodeRecursive(array &$node, string $nodeType, Closure $callback)
 
 function replaceMergeTags(array $content, array $mergeTags): array
 {
-    $renderer = RichContentRenderer::make($content)->mergeTags($mergeTags);
-    $rendered = $renderer->toHtml();
-    $editor = $renderer->getEditor();
+    $rendered = renderRichText($content, $mergeTags);
+    $editor = (new RichContentRenderer())->getEditor();
     $doc = $editor->setContent($rendered)->getDocument();
     return $doc;
+}
+
+function renderRichText(array $doc, ?array $mergeTags = null): string
+{
+    $renderer = RichContentRenderer::make($doc);
+    if ($mergeTags) {
+        $renderer->mergeTags($mergeTags);
+    }
+    $html = str($renderer->toHtml());
+    $rendered = $html->replace(' data-type="mergeTag"', '');
+    return $rendered;
 }
 
 function replaceLinks(array $content, Recipient $recipient): array
