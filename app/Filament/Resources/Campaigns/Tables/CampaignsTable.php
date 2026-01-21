@@ -44,6 +44,7 @@ class CampaignsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->paginated([25, 50, 100, 'all']);
     }
 }
