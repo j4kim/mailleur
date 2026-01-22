@@ -45,6 +45,8 @@ class CampaignsTable
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->paginated([25, 50, 100, 'all']);
+            ->paginated([25, 50, 100, 'all'])
+            ->defaultSort('id', direction: 'desc')
+            ->persistSortInSession();
     }
 }
