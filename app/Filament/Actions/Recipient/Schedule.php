@@ -39,7 +39,8 @@ class Schedule extends Action
                 ->minutesStep(15)
                 ->minDate(now())
                 ->seconds(false)
-                ->default(now()->startOfDay()->nextWeekday()->hour(8)),
+                ->default(now()->startOfDay()->nextWeekday()->hour(8))
+                ->displayFormat('d.m.Y H:i'),
         ]);
 
         $this->action(function (Recipient $r, array $data) {
