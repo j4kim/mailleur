@@ -2,17 +2,13 @@
 
 namespace App\Filament\Actions\Recipient;
 
+use App\Enums\EventLogType;
 use App\Enums\RecipientStatus;
 use App\Models\Recipient;
-use Exception;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
-
-use function App\Tools\errorNotif;
-use function App\Tools\successNotif;
 
 class Schedule extends Action
 {
@@ -48,6 +44,7 @@ class Schedule extends Action
                 ...$data,
                 'status' => RecipientStatus::Scheduled,
             ]);
+            $r->logEvent(EventLogType::MailScheduled, $data);
         });
     }
 }
