@@ -98,7 +98,7 @@ class Campaign extends Model
                 $recipient = $this->recipients()->firstOrNew(['email' => $email]);
                 $data = $row->except('email');
                 if ($recipient->exists) {
-                    $recipient->data = array_merge($recipient->data, $data->toArray());
+                    $recipient->data = array_merge($recipient->data ?? [], $data->toArray());
                 } else {
                     $recipient->data = $data;
                 }
