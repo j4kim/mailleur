@@ -109,6 +109,7 @@ class RecipientsRelationManager extends RelationManager
                     Actions\Bulk\Send::make(),
                 ]),
             ])
-            ->paginated([25, 50, 100, 'all']);
+            ->paginated([25, 50, 100, 'all'])
+            ->persistSortInSession();
     }
 }
