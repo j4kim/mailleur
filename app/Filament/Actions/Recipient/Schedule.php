@@ -34,10 +34,12 @@ class Schedule extends Action
 
         $this->schema([
             DateTimePicker::make('to_be_sent_at')
+                ->belowContent('Minutes must be set to 0, 15, 30 or 45')
                 ->native(false)
                 ->minutesStep(15)
                 ->minDate(now())
-                ->seconds(false),
+                ->seconds(false)
+                ->default(now()->startOfHour()->addHour()),
         ]);
 
         $this->action(function (Recipient $r, array $data) {
