@@ -51,7 +51,7 @@ class Recipient extends Model
     protected function email(): Attribute
     {
         return Attribute::make(
-            set: fn(string $value) => strtolower($value),
+            set: fn(string $value) => trim(strtolower($value)),
         );
     }
 
