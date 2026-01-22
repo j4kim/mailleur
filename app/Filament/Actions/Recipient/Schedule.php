@@ -2,8 +2,6 @@
 
 namespace App\Filament\Actions\Recipient;
 
-use App\Enums\EventLogType;
-use App\Enums\RecipientStatus;
 use App\Models\Recipient;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
@@ -39,12 +37,6 @@ class Schedule extends Action
                 ->displayFormat('d.m.Y H:i'),
         ]);
 
-        $this->action(function (Recipient $r, array $data) {
-            $r->update([
-                ...$data,
-                'status' => RecipientStatus::Scheduled,
-            ]);
-            $r->logEvent(EventLogType::MailScheduled, $data);
-        });
+        $this->action(fn(Recipient $r, array $data) => $r->schedule($data['to_be_sent_at']));
     }
 }

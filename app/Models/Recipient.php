@@ -175,4 +175,19 @@ class Recipient extends Model
         }
         return [$successCount, $errorCount];
     }
+
+    public function schedule($toBeSentAt)
+    {
+        $this->to_be_sent_at = $toBeSentAt;
+        $this->status = RecipientStatus::Scheduled;
+        $this->save();
+        $this->logEvent(EventLogType::MailScheduled, ['to_be_sent_at' => $toBeSentAt]);
+    }
+
+    public function cancelSchedule()
+    {
+        $this->to_be_sent_at = null;
+        $this->status = $this->mail_body ? RecipientStatus::Customized : RecipientStatus::Ready;
+        $this->save();
+    }
 }
