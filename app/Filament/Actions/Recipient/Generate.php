@@ -27,6 +27,7 @@ class Generate extends EditAction
         );
         $this->icon(Heroicon::Bolt);
         $this->slideOver();
+        $this->closeModalByClickingAway(false);
 
         $this->schema([
             RichEditor::make('mail_body')->json()
