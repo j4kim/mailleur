@@ -20,6 +20,7 @@ class Write extends EditAction
 
         $this->label("Write");
         $this->slideOver();
+        $this->closeModalByClickingAway(false);
 
         $this->schema([
             RichEditor::make('mail_body')->json()
