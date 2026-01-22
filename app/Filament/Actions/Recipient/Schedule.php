@@ -39,7 +39,7 @@ class Schedule extends Action
                 ->minutesStep(15)
                 ->minDate(now())
                 ->seconds(false)
-                ->default(now()->startOfHour()->addHour()),
+                ->default(now()->startOfDay()->nextWeekday()->hour(8)),
         ]);
 
         $this->action(function (Recipient $r, array $data) {
