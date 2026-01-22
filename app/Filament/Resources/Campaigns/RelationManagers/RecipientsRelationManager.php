@@ -87,6 +87,7 @@ class RecipientsRelationManager extends RelationManager
                 Actions\Generate::make('generate')->for(RS::Initial),
                 Actions\Ready::make('ready')->for(RS::Customized),
                 Actions\Send::make('send')->for(RS::Ready),
+                Actions\CancelSchedule::make()->for(RS::Scheduled),
                 Actions\Preview::make('preview')->for(RS::Sent),
                 Actions\Logs::make('logs')->for(RS::Failed),
                 ActionGroup::make([
