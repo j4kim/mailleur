@@ -11,4 +11,9 @@ trait VisibleForStatus
     {
         return $this->visible(fn(Recipient $r) => in_array($r->status, $status));
     }
+
+    public function notFor(RecipientStatus ...$status): static
+    {
+        return $this->hidden(fn(Recipient $r) => in_array($r->status, $status));
+    }
 }

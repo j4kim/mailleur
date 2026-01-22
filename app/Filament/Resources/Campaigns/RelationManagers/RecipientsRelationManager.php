@@ -91,7 +91,7 @@ class RecipientsRelationManager extends RelationManager
                 Actions\Logs::make('logs')->for(RS::Failed),
                 ActionGroup::make([
                     Actions\EditData::make()->for(RS::Initial, RS::Customized, RS::Failed),
-                    Actions\SetStatus::make(),
+                    Actions\SetStatus::make()->notFor(RS::Scheduled),
                     Actions\Generate::make()->for(RS::Customized, RS::Failed),
                     Actions\Ready::make()->for(RS::Failed),
                     Actions\Write::make()->for(RS::Customized, RS::Failed),
