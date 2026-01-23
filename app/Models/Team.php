@@ -59,7 +59,7 @@ class Team extends Model
 
         foreach (['host', 'port', 'password', 'username'] as $key) {
             if (empty($smtpc[$key])) {
-                throw new Exception("$key missing in Team SMTP config");
+                throw new Exception("$key missing in SMTP config for team $this->name");
             }
         }
 

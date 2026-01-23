@@ -190,4 +190,36 @@ class Recipient extends Model
         $this->status = $this->mail_body ? RecipientStatus::Customized : RecipientStatus::Ready;
         $this->save();
     }
+
+    public static function sendScheduled()
+    {
+        $recipients = Recipient::where('status', RecipientStatus::Scheduled)
+            ->wherePast('to_be_sent_at')
+            ->get();
+        if ($recipients->isEmpty()) {
+            return;
+        }
+        $campaignIds = $recipients->pluck('campaign_id')->unique()->values();
+        $campaigns = Campaign::whereIn($campaignIds)->with('team')->get();
+        $groupedByCampaign = $recipients->groupBy('campaign_id');
+        foreach ($groupedByCampaign as $campaignId => $campaignRecipients) {
+            $campaign = $campaigns->find($campaignId);
+            /** @var Team $team */
+            $team = $campaign->team;
+            $team->configureMailer();
+            $successCount = 0;
+            $errorCount = 0;
+            foreach ($campaignRecipients as $recipient) {
+                /** @var Recipient $recipient */
+                try {
+                    $recipient->setRelation('campaign', $campaign);
+                    $recipient->send();
+                    $successCount++;
+                } catch (Exception $e) {
+                    $errorCount++;
+                }
+            }
+            dump(compact('campaignId', 'successCount', 'errorCount'));
+        }
+    }
 }
