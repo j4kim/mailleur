@@ -110,6 +110,7 @@ class RecipientsRelationManager extends RelationManager
                     Actions\Bulk\SetStatus::make(),
                     Actions\Bulk\Send::make(),
                     Actions\Bulk\Schedule::make(),
+                    Actions\Bulk\CancelSchedule::make(),
                 ]),
             ])
             ->paginated([25, 50, 100, 'all'])

@@ -53,7 +53,12 @@ class Schedule extends BulkAction
                 /** @var Recipient $recipient */
                 $recipient->schedule($data['to_be_sent_at']);
             }
-            successNotif("Mail scheduled for " . str("recipient")->plural($recipients->count(), true));
+            $count = $recipients->count();
+            if ($count) {
+                successNotif("Mail scheduled for " . str("recipient")->plural($recipients->count(), true));
+            } else {
+                notif(null, "No recipients to schedule")->warning()->send();
+            }
         });
     }
 }
