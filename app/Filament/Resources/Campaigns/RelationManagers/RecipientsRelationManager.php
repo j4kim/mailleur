@@ -87,17 +87,19 @@ class RecipientsRelationManager extends RelationManager
                 Actions\Generate::make('generate')->for(RS::Initial),
                 Actions\Ready::make('ready')->for(RS::Customized),
                 Actions\Send::make('send')->for(RS::Ready),
+                Actions\CancelSchedule::make()->for(RS::Scheduled),
                 Actions\Preview::make('preview')->for(RS::Sent),
                 Actions\Logs::make('logs')->for(RS::Failed),
                 ActionGroup::make([
                     Actions\EditData::make()->for(RS::Initial, RS::Customized, RS::Failed),
-                    Actions\SetStatus::make(),
+                    Actions\SetStatus::make()->notFor(RS::Scheduled),
                     Actions\Generate::make()->for(RS::Customized, RS::Failed),
                     Actions\Ready::make()->for(RS::Failed),
                     Actions\Write::make()->for(RS::Customized, RS::Failed),
                     Actions\Send::make()->for(RS::Failed),
+                    Actions\Schedule::make()->for(RS::Initial, RS::Customized, RS::Ready, RS::Failed),
                     Actions\Preview::make()->for(RS::Customized, RS::Ready, RS::Failed),
-                    Actions\Logs::make()->for(RS::Initial, RS::Customized, RS::Ready, RS::Sent),
+                    Actions\Logs::make()->notFor(RS::Failed),
                     DeleteAction::make(),
                 ]),
             ])
@@ -107,6 +109,8 @@ class RecipientsRelationManager extends RelationManager
                     Actions\Bulk\Generate::make(),
                     Actions\Bulk\SetStatus::make(),
                     Actions\Bulk\Send::make(),
+                    Actions\Bulk\Schedule::make(),
+                    Actions\Bulk\CancelSchedule::make(),
                 ]),
             ])
             ->paginated([25, 50, 100, 'all'])

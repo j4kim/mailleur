@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use Filament\Support\Colors\Color;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
@@ -12,6 +13,7 @@ enum RecipientStatus: int implements HasLabel, HasColor
     case Ready = 2;
     case Sent = 3;
     case Failed = 4;
+    case Scheduled = 5;
 
     public function getLabel(): ?string
     {
@@ -26,6 +28,7 @@ enum RecipientStatus: int implements HasLabel, HasColor
             self::Ready => 'info',
             self::Sent => 'success',
             self::Failed => 'danger',
+            self::Scheduled => Color::Fuchsia,
         };
     }
 }
