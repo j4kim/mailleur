@@ -59,12 +59,12 @@ class Team extends Model
 
         foreach (['host', 'port', 'password', 'username'] as $key) {
             if (empty($smtpc[$key])) {
-                throw new Exception("$key missing in Team SMTP config");
+                throw new Exception("$key missing in SMTP config for team $this->name");
             }
         }
 
         config([
-            'mail.mailers.smtp' => array_merge(
+            "mail.mailers.team-$this->id" => array_merge(
                 config('mail.mailers.smtp'),
                 $smtpc
             )

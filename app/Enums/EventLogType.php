@@ -15,6 +15,7 @@ enum EventLogType: string implements HasLabel, HasColor
     case MailSent = 'mail-sent';
     case SendingFailed = 'sending-failed';
     case LinkClicked = 'link-clicked';
+    case MailScheduled = 'mail-scheduled';
 
     public function getLabel(): ?string
     {
@@ -31,6 +32,7 @@ enum EventLogType: string implements HasLabel, HasColor
             self::MailSent => 'success',
             self::SendingFailed => 'danger',
             self::LinkClicked => Color::Cyan,
+            self::MailScheduled => Color::Fuchsia,
         };
     }
 }

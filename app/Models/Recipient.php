@@ -127,8 +127,9 @@ class Recipient extends Model
         }
         $this->rendered_mail_body = $this->renderMailBody();
         try {
+            $teamId = $this->campaign->team_id;
             $mail = new CampaignMail($this);
-            Mail::to($this->email)->send($mail);
+            Mail::mailer("team-$teamId")->to($this->email)->send($mail);
             $this->status = RecipientStatus::Sent;
             $this->sent_at = now();
             $this->save();
@@ -174,5 +175,55 @@ class Recipient extends Model
             }
         }
         return [$successCount, $errorCount];
+    }
+
+    public function schedule($toBeSentAt)
+    {
+        $this->to_be_sent_at = $toBeSentAt;
+        $this->status = RecipientStatus::Scheduled;
+        $this->save();
+        $this->logEvent(EventLogType::MailScheduled, ['to_be_sent_at' => $toBeSentAt]);
+    }
+
+    public function cancelSchedule()
+    {
+        $this->to_be_sent_at = null;
+        $this->status = $this->mail_body ? RecipientStatus::Customized : RecipientStatus::Ready;
+        $this->save();
+    }
+
+    public static function sendScheduled()
+    {
+        $recipients = Recipient::where('status', RecipientStatus::Scheduled)
+            ->wherePast('to_be_sent_at')
+            ->get();
+        if ($recipients->isEmpty()) {
+            echo "No recipient scheduled to be sent";
+            return;
+        }
+        $campaignIds = $recipients->pluck('campaign_id')->unique()->values();
+        $campaigns = Campaign::whereIn('id', $campaignIds)->with('team')->get();
+        $groupedByCampaign = $recipients->groupBy('campaign_id');
+        foreach ($groupedByCampaign as $campaignId => $campaignRecipients) {
+            /** @var Campaign $campaign */
+            $campaign = $campaigns->find($campaignId);
+            /** @var Team $team */
+            $team = $campaign->team;
+            $team->configureMailer();
+            foreach ($campaignRecipients as $recipient) {
+                /** @var Recipient $recipient */
+                try {
+                    $recipient->setRelation('campaign', $campaign);
+                    $recipient->send();
+                } catch (Exception $e) {
+                    //
+                }
+            }
+            try {
+                $campaign->sendScheduledReport($campaignRecipients);
+            } catch (Exception $e) {
+                echo "Error: Unable to send scheduled report for $campaign->id: {$e->getMessage()}\n";
+            }
+        }
     }
 }
