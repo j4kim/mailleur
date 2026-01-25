@@ -200,7 +200,7 @@ class Recipient extends Model
             return;
         }
         $campaignIds = $recipients->pluck('campaign_id')->unique()->values();
-        $campaigns = Campaign::whereIn($campaignIds)->with('team')->get();
+        $campaigns = Campaign::whereIn('id', $campaignIds)->with('team')->get();
         $groupedByCampaign = $recipients->groupBy('campaign_id');
         foreach ($groupedByCampaign as $campaignId => $campaignRecipients) {
             $campaign = $campaigns->find($campaignId);
