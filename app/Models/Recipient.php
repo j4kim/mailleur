@@ -198,29 +198,32 @@ class Recipient extends Model
             ->wherePast('to_be_sent_at')
             ->get();
         if ($recipients->isEmpty()) {
+            echo "No recipient scheduled to be sent";
             return;
         }
         $campaignIds = $recipients->pluck('campaign_id')->unique()->values();
         $campaigns = Campaign::whereIn('id', $campaignIds)->with('team')->get();
         $groupedByCampaign = $recipients->groupBy('campaign_id');
         foreach ($groupedByCampaign as $campaignId => $campaignRecipients) {
+            /** @var Campaign $campaign */
             $campaign = $campaigns->find($campaignId);
             /** @var Team $team */
             $team = $campaign->team;
             $team->configureMailer();
-            $successCount = 0;
-            $errorCount = 0;
             foreach ($campaignRecipients as $recipient) {
                 /** @var Recipient $recipient */
                 try {
                     $recipient->setRelation('campaign', $campaign);
                     $recipient->send();
-                    $successCount++;
                 } catch (Exception $e) {
-                    $errorCount++;
+                    //
                 }
             }
-            dump(compact('campaignId', 'successCount', 'errorCount'));
+            try {
+                $campaign->sendScheduledReport($campaignRecipients);
+            } catch (Exception $e) {
+                echo "Error: Unable to send scheduled report for $campaign->id: {$e->getMessage()}\n";
+            }
         }
     }
 }

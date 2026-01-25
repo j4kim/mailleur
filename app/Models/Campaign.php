@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Enums\EventLogType;
+use App\Mail\ScheduledReport;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use League\Csv\Info;
@@ -146,5 +149,12 @@ class Campaign extends Model
     {
         $cc = collect(@$this->envelope[$key]);
         return $cc->map(fn($a) => new Address(...$a))->toArray();
+    }
+
+    public function sendScheduledReport(Collection $recipients)
+    {
+        $mail = new ScheduledReport($this, $recipients);
+        $teamAdmins = $this->team->members()->wherePivot('is_admin', 1)->get();
+        Mail::to($teamAdmins)->send($mail);
     }
 }
