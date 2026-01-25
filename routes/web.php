@@ -4,6 +4,8 @@ use App\Mail\CampaignMail;
 use App\Models\Link;
 use App\Models\EventLog;
 use App\Models\Recipient;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 
@@ -25,3 +27,11 @@ Route::get('/event-logs/{eventLog}', function (EventLog $eventLog) {
     $view = "event-logs.{$eventLog->type->value}";
     return View::exists($view) ? View::make($view, $eventLog) : $eventLog;
 })->middleware('auth')->name('event-log-details');
+
+Route::get('/webcron/run', function (Request $request) {
+    if ($request->secret !== config('auth.webcron_secret')) {
+        abort(403, "Bad secret");
+    }
+    Auth::onceBasic();
+    Recipient::sendScheduled();
+})->name('webcron');

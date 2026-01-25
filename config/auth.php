@@ -112,4 +112,6 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    'webcron_secret' => env('WEBCRON_SECRET'),
+
 ];
