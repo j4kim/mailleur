@@ -64,7 +64,7 @@ class Team extends Model
         }
 
         config([
-            'mail.mailers.smtp' => array_merge(
+            "mail.mailers.team-$this->id" => array_merge(
                 config('mail.mailers.smtp'),
                 $smtpc
             )

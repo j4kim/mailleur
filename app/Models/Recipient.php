@@ -127,8 +127,9 @@ class Recipient extends Model
         }
         $this->rendered_mail_body = $this->renderMailBody();
         try {
+            $teamId = $this->campaign->team_id;
             $mail = new CampaignMail($this);
-            Mail::to($this->email)->send($mail);
+            Mail::mailer("team-$teamId")->to($this->email)->send($mail);
             $this->status = RecipientStatus::Sent;
             $this->sent_at = now();
             $this->save();
