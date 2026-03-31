@@ -15,6 +15,6 @@ class Link extends Model
 
     public function logClick()
     {
-        $this->recipient->logEvent(EventLogType::LinkClicked, ['url' => $this->url]);
+        $this->recipient?->logEvent(EventLogType::LinkClicked, ['url' => $this->url]);
     }
 }
