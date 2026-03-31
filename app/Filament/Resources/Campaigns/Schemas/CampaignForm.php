@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Campaigns\Schemas;
 
 use App\Filament\Pages\Tenancy\EditTeamProfile;
 use App\Models\Campaign;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TagsInput;
@@ -39,6 +40,22 @@ class CampaignForm
                 Section::make('Envelope')
                     ->columns(2)
                     ->schema(EditTeamProfile::getEnvelopeSchema("envelope"))
+                    ->hiddenOn('create')
+                    ->columnSpanFull()
+                    ->collapsed()
+                    ->persistCollapsed(),
+
+                Section::make('Attachments')
+                    ->columns(2)
+                    ->schema([
+                        FileUpload::make('attachments')
+                            ->directory(function (Campaign $campaign) {
+                                return "campaign-attachments/$campaign->id";
+                            })
+                            ->preserveFilenames()
+                            ->multiple()
+                            ->columnSpanFull(),
+                    ])
                     ->hiddenOn('create')
                     ->columnSpanFull()
                     ->collapsed()
