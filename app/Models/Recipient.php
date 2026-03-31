@@ -194,12 +194,14 @@ class Recipient extends Model
 
     public static function sendScheduled()
     {
+        $sent = 0;
+        $failed = 0;
         $recipients = Recipient::where('status', RecipientStatus::Scheduled)
             ->wherePast('to_be_sent_at')
             ->get();
         if ($recipients->isEmpty()) {
             echo "No recipient scheduled to be sent";
-            return;
+            return [$sent, $failed];
         }
         $campaignIds = $recipients->pluck('campaign_id')->unique()->values();
         $campaigns = Campaign::whereIn('id', $campaignIds)->with('team')->get();
@@ -215,8 +217,9 @@ class Recipient extends Model
                 try {
                     $recipient->setRelation('campaign', $campaign);
                     $recipient->send();
+                    $sent++;
                 } catch (Exception $e) {
-                    //
+                    $failed++;
                 }
             }
             try {
@@ -225,5 +228,6 @@ class Recipient extends Model
                 echo "Error: Unable to send scheduled report for $campaign->id: {$e->getMessage()}\n";
             }
         }
+        return [$sent, $failed];
     }
 }

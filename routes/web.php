@@ -33,5 +33,12 @@ Route::get('/webcron/run', function (Request $request) {
         abort(403, "Bad secret");
     }
     Auth::onceBasic();
-    Recipient::sendScheduled();
+    [$sent, $failed] = Recipient::sendScheduled();
+    if ($sent === 0 && $failed === 0) {
+        http_response_code(204);
+    } else if ($sent === 0 && $failed > 0) {
+        http_response_code(500);
+    } else if ($sent > 0 && $failed > 0) {
+        http_response_code(206);
+    }
 })->name('webcron');
