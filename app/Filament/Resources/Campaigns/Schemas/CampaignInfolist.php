@@ -6,6 +6,7 @@ use App\Models\Campaign;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 use function App\Tools\formatAddress;
 
@@ -55,6 +56,22 @@ class CampaignInfolist
                     ->collapsed()
                     ->persistCollapsed()
                     ->columnSpanFull(),
+
+                Section::make('Attachments')
+                    ->visible(function (Campaign $campaign) {
+                        return count($campaign->attachments);
+                    })
+                    ->columnSpanFull()
+                    ->schema([
+                        TextEntry::make('attachments')
+                            ->bulleted()
+                            ->hiddenLabel()
+                            ->formatStateUsing(function (string $state, Campaign $campaign) {
+                                return str($state)->chopStart("campaign-attachments/$campaign->id/");
+                            })
+                            ->url(fn(string $state) => Storage::temporaryUrl($state, now()->addHour()))
+                            ->openUrlInNewTab()
+                    ]),
             ]);
     }
 }
