@@ -200,7 +200,6 @@ class Recipient extends Model
             ->wherePast('to_be_sent_at')
             ->get();
         if ($recipients->isEmpty()) {
-            echo "No recipient scheduled to be sent";
             return [$sent, $failed];
         }
         $campaignIds = $recipients->pluck('campaign_id')->unique()->values();

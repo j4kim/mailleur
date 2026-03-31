@@ -35,10 +35,11 @@ Route::get('/webcron/run', function (Request $request) {
     Auth::onceBasic();
     [$sent, $failed] = Recipient::sendScheduled();
     if ($sent === 0 && $failed === 0) {
-        http_response_code(204);
+        $status = 204;
     } else if ($sent === 0 && $failed > 0) {
-        http_response_code(500);
+        $status = 500;
     } else if ($sent > 0 && $failed > 0) {
-        http_response_code(206);
+        $status = 206;
     }
+    return response(compact('sent', 'failed'), $status);
 })->name('webcron');
