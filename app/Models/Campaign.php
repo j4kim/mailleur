@@ -41,6 +41,7 @@ class Campaign extends Model
             'columns' => 'array',
             'envelope' => 'array',
             'enable_logged_links' => 'boolean',
+            'attachments' => 'array',
         ];
     }
 
