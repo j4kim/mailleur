@@ -59,7 +59,7 @@ class CampaignInfolist
 
                 Section::make('Attachments')
                     ->visible(function (Campaign $campaign) {
-                        return count($campaign->attachments);
+                        return count($campaign->attachments ?? []);
                     })
                     ->columnSpanFull()
                     ->schema([
